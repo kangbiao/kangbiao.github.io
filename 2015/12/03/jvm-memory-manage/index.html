@@ -1,0 +1,657 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>JVM内存自动管理机制 | kingber</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="kangbiao">
+    
+
+    
+    <meta name="description" content="本文主要总结java虚拟机的内存管理机制,不同的数据类型存在在怎样的一块内存区域中,不同的内存区域有哪些不同点,怎样回收过了生命周期的内存,采取何种策略去回收这些对象或者常量,不同的回收算法的优缺点.什么情况下会产生内存溢出异常以及该采取怎样的措施避免内存溢出,以及一些常用的虚拟机性能监控工具和故障排除工具-&amp;lt;&amp;lt;深入理解java虚拟机&amp;gt;&amp;gt;读书笔记
+
+jvm内存区域虚拟机管">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JVM内存自动管理机制">
+<meta property="og:url" content="http://kangbiao.org/2015/12/03/jvm-memory-manage/index.html">
+<meta property="og:site_name" content="kingber">
+<meta property="og:description" content="本文主要总结java虚拟机的内存管理机制,不同的数据类型存在在怎样的一块内存区域中,不同的内存区域有哪些不同点,怎样回收过了生命周期的内存,采取何种策略去回收这些对象或者常量,不同的回收算法的优缺点.什么情况下会产生内存溢出异常以及该采取怎样的措施避免内存溢出,以及一些常用的虚拟机性能监控工具和故障排除工具-&amp;lt;&amp;lt;深入理解java虚拟机&amp;gt;&amp;gt;读书笔记
+
+jvm内存区域虚拟机管">
+<meta property="og:image" content="http://7xlqn0.com1.z0.glb.clouddn.com/20131106214200_112.jpg">
+<meta property="og:image" content="http://7xlqn0.com1.z0.glb.clouddn.com/1348658605_5211.jpg">
+<meta property="og:image" content="http://7xlqn0.com1.z0.glb.clouddn.com/1348659242_7055.jpg">
+<meta property="og:updated_time" content="2016-02-19T12:32:48.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JVM内存自动管理机制">
+<meta name="twitter:description" content="本文主要总结java虚拟机的内存管理机制,不同的数据类型存在在怎样的一块内存区域中,不同的内存区域有哪些不同点,怎样回收过了生命周期的内存,采取何种策略去回收这些对象或者常量,不同的回收算法的优缺点.什么情况下会产生内存溢出异常以及该采取怎样的措施避免内存溢出,以及一些常用的虚拟机性能监控工具和故障排除工具-&amp;lt;&amp;lt;深入理解java虚拟机&amp;gt;&amp;gt;读书笔记
+
+jvm内存区域虚拟机管">
+<meta name="twitter:image" content="http://7xlqn0.com1.z0.glb.clouddn.com/20131106214200_112.jpg">
+
+    
+    <link rel="alternative" href="/atom.xml" title="kingber" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/header.jpg">
+    
+    
+    <link rel="apple-touch-icon" href="/img/header.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/header.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/header.jpg" alt="kingber" title="kingber"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="kingber">kingber</a></h1>
+				<h2 class="blog-motto">关注简书【@<a href="http://www.jianshu.com/users/1a61c084f8fc/latest_articles" target="_blank" style="display:inline;color:blue">进击的诺基亚</a>】，欢迎前来交流^_^</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/categories">分类</a></li>
+					
+						<li><a href="/archives">时间线</a></li>
+					
+						<li><a href="/about">个人简介</a></li>
+					
+					<li><a href="http://git.kangbiao.org" target="_blank">代码仓库</a></li>
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:kangbiao.org">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/12/03/jvm-memory-manage/" title="JVM内存自动管理机制" itemprop="url">JVM内存自动管理机制</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="kangbiao" target="_blank" itemprop="author">kangbiao</a>
+		
+  <p class="article-time">
+    <time datetime="2015-12-03T14:20:56.000Z" itemprop="datePublished"> 发表于 2015-12-03</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#jvm内存区域"><span class="toc-number">1.</span> <span class="toc-text">jvm内存区域</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#方法区"><span class="toc-number">1.1.</span> <span class="toc-text">方法区</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#运行时常量池"><span class="toc-number">1.2.</span> <span class="toc-text">运行时常量池</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#堆"><span class="toc-number">1.3.</span> <span class="toc-text">堆</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#虚拟机栈"><span class="toc-number">1.4.</span> <span class="toc-text">虚拟机栈</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#程序计数器"><span class="toc-number">1.5.</span> <span class="toc-text">程序计数器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#本地方法栈"><span class="toc-number">1.6.</span> <span class="toc-text">本地方法栈</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#直接内存"><span class="toc-number">1.7.</span> <span class="toc-text">直接内存</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数据在上述内存区域的分布"><span class="toc-number">1.8.</span> <span class="toc-text">数据在上述内存区域的分布</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#jvm内存溢出"><span class="toc-number">2.</span> <span class="toc-text">jvm内存溢出</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#虚拟机垃圾收集器"><span class="toc-number">3.</span> <span class="toc-text">虚拟机垃圾收集器</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#堆中垃圾回收算法"><span class="toc-number">3.1.</span> <span class="toc-text">堆中垃圾回收算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#方法区中垃圾回收算法"><span class="toc-number">3.2.</span> <span class="toc-text">方法区中垃圾回收算法</span></a></li></ol></li></ol>
+		
+		</div>
+		
+		<blockquote>
+<p>本文主要总结java虚拟机的内存管理机制,不同的数据类型存在在怎样的一块内存区域中,不同的内存区域有哪些不同点,怎样回收过了生命周期的内存,采取何种策略去回收这些对象或者常量,不同的回收算法的优缺点.什么情况下会产生内存溢出异常以及该采取怎样的措施避免内存溢出,以及一些常用的虚拟机性能监控工具和故障排除工具<br>-&lt;&lt;深入理解java虚拟机&gt;&gt;读书笔记</p>
+</blockquote>
+<h2 id="jvm内存区域"><a href="#jvm内存区域" class="headerlink" title="jvm内存区域"></a>jvm内存区域</h2><p><strong>虚拟机管理的运行时数据区域如下图所示</strong><br><img src="http://7xlqn0.com1.z0.glb.clouddn.com/20131106214200_112.jpg" alt="虚拟机运行时数据区域图例"></p>
+<h3 id="方法区"><a href="#方法区" class="headerlink" title="方法区"></a>方法区</h3><p>方法区是各个线程共享的内存区域(这样就能理解为什么需要线程同步和加锁了,当然还与java数据访问时数据复制来复制去有关),用于存储已被虚拟机加载的类信息,常量,静态变量,JIT即时编译后的代码等.<br>方法区的数据类型复杂,而且jvm规范也没有明确指定方法区的内存使用和回收策略,所以不同的虚拟机对于方法区的内存回收都有不同的机制.下文介绍.</p>
+<h3 id="运行时常量池"><a href="#运行时常量池" class="headerlink" title="运行时常量池"></a>运行时常量池</h3><p>运行时常量池是方法区的一部分,存储编译时或者运行时产生的字面常量或者其他信息.</p>
+<h3 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h3><p>堆也是被各个线程共享的内存区域,虚拟机主要管理的内存区域,是java存放对象数据的地方,这里面也有指针,因为对象数据里面可能还有其他对象的引用,还有方法区常量池常量的引用.还有数组也是在堆上分配内存.</p>
+<h3 id="虚拟机栈"><a href="#虚拟机栈" class="headerlink" title="虚拟机栈"></a>虚拟机栈</h3><p>线程私有,与线程同生同灭.用于存储java运行时的内存模型,也就是每个方法执行时的一个栈帧,该栈帧存储了局部变量表,操作数栈,动态链表,方法出口等运行时信息.<br>对于一个方法开始执行到执行结束就是一个栈帧在虚拟机中入栈和出栈的过程.</p>
+<h3 id="程序计数器"><a href="#程序计数器" class="headerlink" title="程序计数器"></a>程序计数器</h3><p>和虚拟栈帧一样,该内存区域的生命周期也是在一个线程的执行周期内.可以看作当前线程执行字节码行号的指示器,字节码的解释执行工作就是通过这个来确定循环,判断,跳转,异常处理以及线程恢复等功能.<br>每个线程拥有一个独立的程序计数器内存区域可以使得多线程环境下线程能接着上一个时间片继续执行.</p>
+<h3 id="本地方法栈"><a href="#本地方法栈" class="headerlink" title="本地方法栈"></a>本地方法栈</h3><p>本地方法栈与虚拟机栈的作用几乎相同,不同的地方在于虚拟机栈用于服务java方法,而本地方法栈可以描述native方法,即虚拟机规范规定的可使用的其他语言.</p>
+<h3 id="直接内存"><a href="#直接内存" class="headerlink" title="直接内存"></a>直接内存</h3><p>直接内存不是虚拟机运行时数据取的一部分<br>在jdk1.4后引入了一种通道和缓冲区的I/O方式,使用native函数库直接分配堆外内存,然后通过一个存储在java堆中的DirectByteBuffer对象作为这块内存的引用直接进行操作,这样能在一定的场景下显著提高性能,避免了在java堆中和native堆中来回复制数据.</p>
+<h3 id="数据在上述内存区域的分布"><a href="#数据在上述内存区域的分布" class="headerlink" title="数据在上述内存区域的分布"></a>数据在上述内存区域的分布</h3><blockquote>
+<p>对象的两种不同访问形式</p>
+</blockquote>
+<p><img src="http://7xlqn0.com1.z0.glb.clouddn.com/1348658605_5211.jpg" alt="直接指针方式访问对象"><br><strong>这样看句柄就是一系列的指针和其他数据组成的数据结构,果然是要好好学习数据结构</strong><br><img src="http://7xlqn0.com1.z0.glb.clouddn.com/1348659242_7055.jpg" alt="间接指针访问对象"></p>
+<h2 id="jvm内存溢出"><a href="#jvm内存溢出" class="headerlink" title="jvm内存溢出"></a>jvm内存溢出</h2><blockquote>
+<p>内存溢出即指上述内存区域存放的数据结构的总量大于限制的最大大小,导致虚拟机跑出内存溢出异常.</p>
+</blockquote>
+<h2 id="虚拟机垃圾收集器"><a href="#虚拟机垃圾收集器" class="headerlink" title="虚拟机垃圾收集器"></a>虚拟机垃圾收集器</h2><blockquote>
+<p>如何判断对象需要被回收？<br>对于不同的算法有不同的判断方式</p>
+</blockquote>
+<h3 id="堆中垃圾回收算法"><a href="#堆中垃圾回收算法" class="headerlink" title="堆中垃圾回收算法"></a>堆中垃圾回收算法</h3><p><strong>引用计数算法</strong><br>给每个对象添加一个引用计数器，每当有一个地方引用它时，计数器加一，引用失效则减一。<br>优点：实现简单，判断效率高<br>缺点：当对象存在相互引用时，不能够回收此类对象<br><strong>可达性分析算法</strong><br>可达性算法的核心在于找到一系列的根节点，并且判断对象到这些根节点是否可达。<br>可作为根节点的对象有：</p>
+<ol>
+<li>虚拟机栈中引用的对象</li>
+<li>方法取中静态属性引用的对象</li>
+<li>方法取中常量引用的对象</li>
+<li>本地方法栈中JNI引用的对象</li>
+</ol>
+<p><strong>四种引用</strong><br>强引用-软引用-弱引用-虚引用</p>
+<h3 id="方法区中垃圾回收算法"><a href="#方法区中垃圾回收算法" class="headerlink" title="方法区中垃圾回收算法"></a>方法区中垃圾回收算法</h3><p><strong>标记-清除算法</strong><br>首先标记出所有需要回收的对象，在标记完成后统一进行回收，但是缺点就是会造成大量的内存碎片。导致之后给大的对象分配内存无可用空间。<br><strong>复制算法</strong><br>将可用的内存分为两半，一次只使用其中的一半，当使用完以后，将还活着的对象全部复制到另一半内存空间中，然后清理掉原来的那半内存，缺点就是代价太高，需要牺牲一半的内存。<br><strong>标记-整理算法</strong><br>将所有的对象像一端移动，然后直接清理掉其他的对象（98%的对象生命周期都很短）</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/JAVA/">JAVA</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/jvm/">jvm</a><a href="/tags/内存管理/">内存管理</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://kangbiao.org/2015/12/03/jvm-memory-manage/" data-title="JVM内存自动管理机制 | kingber" data-tsina="null" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2015/12/15/MQ-learning/" title="理解JAVA MQ消息中间件">
+  <strong>上一篇：</strong><br/>
+  <span>
+  理解JAVA MQ消息中间件</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2015/11/24/emmet-usage/"  title="前端开发神器emmet使用教程">
+ <strong>下一篇：</strong><br/> 
+ <span>前端开发神器emmet使用教程
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2015/12/03/jvm-memory-manage/" data-title="JVM内存自动管理机制" data-url="http://kangbiao.org/2015/12/03/jvm-memory-manage/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#jvm内存区域"><span class="toc-number">1.</span> <span class="toc-text">jvm内存区域</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#方法区"><span class="toc-number">1.1.</span> <span class="toc-text">方法区</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#运行时常量池"><span class="toc-number">1.2.</span> <span class="toc-text">运行时常量池</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#堆"><span class="toc-number">1.3.</span> <span class="toc-text">堆</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#虚拟机栈"><span class="toc-number">1.4.</span> <span class="toc-text">虚拟机栈</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#程序计数器"><span class="toc-number">1.5.</span> <span class="toc-text">程序计数器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#本地方法栈"><span class="toc-number">1.6.</span> <span class="toc-text">本地方法栈</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#直接内存"><span class="toc-number">1.7.</span> <span class="toc-text">直接内存</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数据在上述内存区域的分布"><span class="toc-number">1.8.</span> <span class="toc-text">数据在上述内存区域的分布</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#jvm内存溢出"><span class="toc-number">2.</span> <span class="toc-text">jvm内存溢出</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#虚拟机垃圾收集器"><span class="toc-number">3.</span> <span class="toc-text">虚拟机垃圾收集器</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#堆中垃圾回收算法"><span class="toc-number">3.1.</span> <span class="toc-text">堆中垃圾回收算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#方法区中垃圾回收算法"><span class="toc-number">3.2.</span> <span class="toc-text">方法区中垃圾回收算法</span></a></li></ol></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/CS原理/" title="CS原理">CS原理<sup>3</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/JAVA/" title="JAVA">JAVA<sup>12</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/PYTHON/" title="PYTHON">PYTHON<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/SQL-NoSQL/" title="SQL&amp;NoSQL">SQL&amp;NoSQL<sup>4</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/web前端/" title="web前端">web前端<sup>3</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/大数据/" title="大数据">大数据<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/接口文档/" title="接口文档">接口文档<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/数据结构和算法/" title="数据结构和算法">数据结构和算法<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/服务器/" title="服务器">服务器<sup>6</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/版本管理/" title="版本管理">版本管理<sup>2</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/ubuntu/" title="ubuntu">ubuntu<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/shell/" title="shell">shell<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/j2ee/" title="j2ee">j2ee<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/python/" title="python">python<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/notify/" title="notify">notify<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/MQ/" title="MQ">MQ<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/设计模式/" title="设计模式">设计模式<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/跨域/" title="跨域">跨域<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/crontab/" title="crontab">crontab<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/datatable/" title="datatable">datatable<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/emmet/" title="emmet">emmet<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/hadoop/" title="hadoop">hadoop<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/hash/" title="hash">hash<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/gitlab/" title="gitlab">gitlab<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/idea/" title="idea">idea<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/泛型/" title="泛型">泛型<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/php/" title="php">php<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/jvm/" title="jvm">jvm<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/内存管理/" title="内存管理">内存管理<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/算法/" title="算法">算法<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://www.liaoshichao.com" target="_blank" title="老廖的个人博客">老廖的个人博客</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://thehackercat.me" target="_blank" title="TheHackerCat">TheHackerCat</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://jm.taobao.org" target="_blank" title="淘宝中间件团队">淘宝中间件团队</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.imsiren.com" target="_blank" title="PHP性能优化">PHP性能优化</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://tutorials.jenkov.com" target="_blank" title="全栈开发参考(en)">全栈开发参考(en)</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> 欢迎访问我的个人博客 <br/>
+			博客正在迁移至简书平台</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/3496429803" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/kangbiao" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		
+		
+		<a href="http://www.zhihu.com/people/kang-biao-94" target="_blank" class="icon-zhihu" title="知乎"></a>
+		
+		
+		
+		<a href="mailto:kangbiao@kangbiao.org" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2017 
+		
+		<a href="/about" target="_blank" title="kangbiao">kangbiao</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"kingber"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?e6d1f421bbc9962127a50488f9ed37d1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>

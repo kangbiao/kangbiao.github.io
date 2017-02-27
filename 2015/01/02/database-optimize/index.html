@@ -1,0 +1,633 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>mysql数据库优化 | kingber</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="kangbiao">
+    
+
+    
+    <meta name="description" content="注：数据库基于我的博客数据库设计
+
+对COUNT的优化同时查询分类为PHP和JAVA的文章数的总数：SELECT COUNT (topic=php) AS ‘php文章数’ ,COUNT(topic=java) AS ‘JAVA文章数’ FROM article;注意count函数不会对null值进行计数，所以如果 对null进行计数，就需要加上 or null
+子查询的优化将子查询优化成连接查">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mysql数据库优化">
+<meta property="og:url" content="http://kangbiao.org/2015/01/02/database-optimize/index.html">
+<meta property="og:site_name" content="kingber">
+<meta property="og:description" content="注：数据库基于我的博客数据库设计
+
+对COUNT的优化同时查询分类为PHP和JAVA的文章数的总数：SELECT COUNT (topic=php) AS ‘php文章数’ ,COUNT(topic=java) AS ‘JAVA文章数’ FROM article;注意count函数不会对null值进行计数，所以如果 对null进行计数，就需要加上 or null
+子查询的优化将子查询优化成连接查">
+<meta property="og:updated_time" content="2016-04-02T16:02:38.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="mysql数据库优化">
+<meta name="twitter:description" content="注：数据库基于我的博客数据库设计
+
+对COUNT的优化同时查询分类为PHP和JAVA的文章数的总数：SELECT COUNT (topic=php) AS ‘php文章数’ ,COUNT(topic=java) AS ‘JAVA文章数’ FROM article;注意count函数不会对null值进行计数，所以如果 对null进行计数，就需要加上 or null
+子查询的优化将子查询优化成连接查">
+
+    
+    <link rel="alternative" href="/atom.xml" title="kingber" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/header.jpg">
+    
+    
+    <link rel="apple-touch-icon" href="/img/header.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/header.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/header.jpg" alt="kingber" title="kingber"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="kingber">kingber</a></h1>
+				<h2 class="blog-motto">关注简书【@<a href="http://www.jianshu.com/users/1a61c084f8fc/latest_articles" target="_blank" style="display:inline;color:blue">进击的诺基亚</a>】，欢迎前来交流^_^</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/categories">分类</a></li>
+					
+						<li><a href="/archives">时间线</a></li>
+					
+						<li><a href="/about">个人简介</a></li>
+					
+					<li><a href="http://git.kangbiao.org" target="_blank">代码仓库</a></li>
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:kangbiao.org">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/01/02/database-optimize/" title="mysql数据库优化" itemprop="url">mysql数据库优化</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="kangbiao" target="_blank" itemprop="author">kangbiao</a>
+		
+  <p class="article-time">
+    <time datetime="2015-01-02T04:47:44.000Z" itemprop="datePublished"> 发表于 2015-01-02</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#对COUNT的优化"><span class="toc-number">1.</span> <span class="toc-text">对COUNT的优化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#子查询的优化"><span class="toc-number">2.</span> <span class="toc-text">子查询的优化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GROUP-BY-的优化"><span class="toc-number">3.</span> <span class="toc-text">GROUP BY 的优化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#limit查询的优化"><span class="toc-number">4.</span> <span class="toc-text">limit查询的优化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数据库结构的优化"><span class="toc-number">5.</span> <span class="toc-text">数据库结构的优化</span></a></li></ol>
+		
+		</div>
+		
+		<blockquote>
+<p>注：数据库基于我的博客数据库设计</p>
+</blockquote>
+<h3 id="对COUNT的优化"><a href="#对COUNT的优化" class="headerlink" title="对COUNT的优化"></a>对COUNT的优化</h3><p>同时查询分类为PHP和JAVA的文章数的总数：<br>SELECT COUNT (topic=php) AS ‘php文章数’ ,COUNT(topic=java) AS ‘JAVA文章数’ FROM article;<br>注意count函数不会对null值进行计数，所以如果 对null进行计数，就需要加上 or null</p>
+<h3 id="子查询的优化"><a href="#子查询的优化" class="headerlink" title="子查询的优化"></a>子查询的优化</h3><p>将子查询优化成连接查询，但优化以后可能存在一对多的关系，如果不需要一对多，就需要distinct去除重复<br>SELECT <em> FROM TABLE1 WHERE id IN (SELECT id FROM TABLE2 WHERE id=1)<br>SELECT </em> FROM TABLE1 JOIN TABLE2 ON TABLE1.id=TABLE2.id<br>子查询相当于是做多次判断，把所有满足ON 后面条件的结果都返回</p>
+<h3 id="GROUP-BY-的优化"><a href="#GROUP-BY-的优化" class="headerlink" title="GROUP BY 的优化"></a>GROUP BY 的优化</h3><p>两张表关联查询需要做GROUP BY统计，就先在一张表里面做GROUP BY统计后在使用连接的方式进行查询</p>
+<h3 id="limit查询的优化"><a href="#limit查询的优化" class="headerlink" title="limit查询的优化"></a>limit查询的优化</h3><p>由于LIMIT子句一般是配合ORDER BY 使用，所以如果有order by 就使用主键进行排序，然后使用limit的时候记录上一次扫描的地方，不过此方法局限性很大，不合适用于主键不连续的地方</p>
+<h3 id="数据库结构的优化"><a href="#数据库结构的优化" class="headerlink" title="数据库结构的优化"></a>数据库结构的优化</h3><ol>
+<li>使用可以存在数据的最小数据类型</li>
+<li>使用简单的数据类型，int比varchar类型在mysql的处理上更加简单</li>
+<li>尽量少用text类型，非用不可时考虑分表</li>
+</ol>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/SQL-NoSQL/">SQL&NoSQL</a>
+</div>
+
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://kangbiao.org/2015/01/02/database-optimize/" data-title="mysql数据库优化 | kingber" data-tsina="null" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2015/01/07/ngix uwsgi django组合建站/" title="ngix uwsgi django组合建站">
+  <strong>上一篇：</strong><br/>
+  <span>
+  ngix uwsgi django组合建站</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2014/09/14/datatable使用/"  title="记录一下对datatable这个表格插件的使用">
+ <strong>下一篇：</strong><br/> 
+ <span>记录一下对datatable这个表格插件的使用
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2015/01/02/database-optimize/" data-title="mysql数据库优化" data-url="http://kangbiao.org/2015/01/02/database-optimize/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#对COUNT的优化"><span class="toc-number">1.</span> <span class="toc-text">对COUNT的优化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#子查询的优化"><span class="toc-number">2.</span> <span class="toc-text">子查询的优化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GROUP-BY-的优化"><span class="toc-number">3.</span> <span class="toc-text">GROUP BY 的优化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#limit查询的优化"><span class="toc-number">4.</span> <span class="toc-text">limit查询的优化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数据库结构的优化"><span class="toc-number">5.</span> <span class="toc-text">数据库结构的优化</span></a></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/CS原理/" title="CS原理">CS原理<sup>3</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/JAVA/" title="JAVA">JAVA<sup>12</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/PYTHON/" title="PYTHON">PYTHON<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/SQL-NoSQL/" title="SQL&amp;NoSQL">SQL&amp;NoSQL<sup>4</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/web前端/" title="web前端">web前端<sup>3</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/大数据/" title="大数据">大数据<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/接口文档/" title="接口文档">接口文档<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/数据结构和算法/" title="数据结构和算法">数据结构和算法<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/服务器/" title="服务器">服务器<sup>6</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/版本管理/" title="版本管理">版本管理<sup>2</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/ubuntu/" title="ubuntu">ubuntu<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/shell/" title="shell">shell<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/j2ee/" title="j2ee">j2ee<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/python/" title="python">python<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/notify/" title="notify">notify<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/MQ/" title="MQ">MQ<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/设计模式/" title="设计模式">设计模式<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/跨域/" title="跨域">跨域<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/crontab/" title="crontab">crontab<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/datatable/" title="datatable">datatable<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/emmet/" title="emmet">emmet<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/hadoop/" title="hadoop">hadoop<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/hash/" title="hash">hash<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/gitlab/" title="gitlab">gitlab<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/idea/" title="idea">idea<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/泛型/" title="泛型">泛型<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/php/" title="php">php<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/jvm/" title="jvm">jvm<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/内存管理/" title="内存管理">内存管理<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/算法/" title="算法">算法<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://www.liaoshichao.com" target="_blank" title="老廖的个人博客">老廖的个人博客</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://thehackercat.me" target="_blank" title="TheHackerCat">TheHackerCat</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://jm.taobao.org" target="_blank" title="淘宝中间件团队">淘宝中间件团队</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.imsiren.com" target="_blank" title="PHP性能优化">PHP性能优化</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://tutorials.jenkov.com" target="_blank" title="全栈开发参考(en)">全栈开发参考(en)</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> 欢迎访问我的个人博客 <br/>
+			博客正在迁移至简书平台</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/3496429803" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/kangbiao" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		
+		
+		<a href="http://www.zhihu.com/people/kang-biao-94" target="_blank" class="icon-zhihu" title="知乎"></a>
+		
+		
+		
+		<a href="mailto:kangbiao@kangbiao.org" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2017 
+		
+		<a href="/about" target="_blank" title="kangbiao">kangbiao</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"kingber"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?e6d1f421bbc9962127a50488f9ed37d1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>

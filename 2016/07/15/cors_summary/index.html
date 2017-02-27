@@ -1,0 +1,686 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>web开发中的浏览器跨域整理 | kingber</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="kangbiao">
+    
+
+    
+    <meta name="description" content="HTTP访问控制(CORS)同源策略同源政策的目的，是为了保证用户信息的安全，防止恶意的网站窃取数据。设想这样一种情况：A网站是一家银行，用户登录以后，又去浏览其他网站。如果其他网站可以读取A网站的 Cookie，会发生什么？很显然，如果 Cookie 包含隐私（比如存款总额），这些信息就会泄漏。更可怕的是，Cookie 往往用来保存用户的登录状态，如果用户没有退出登录，其他网站就可以冒充用户，为">
+<meta property="og:type" content="article">
+<meta property="og:title" content="web开发中的浏览器跨域整理">
+<meta property="og:url" content="http://kangbiao.org/2016/07/15/cors_summary/index.html">
+<meta property="og:site_name" content="kingber">
+<meta property="og:description" content="HTTP访问控制(CORS)同源策略同源政策的目的，是为了保证用户信息的安全，防止恶意的网站窃取数据。设想这样一种情况：A网站是一家银行，用户登录以后，又去浏览其他网站。如果其他网站可以读取A网站的 Cookie，会发生什么？很显然，如果 Cookie 包含隐私（比如存款总额），这些信息就会泄漏。更可怕的是，Cookie 往往用来保存用户的登录状态，如果用户没有退出登录，其他网站就可以冒充用户，为">
+<meta property="og:updated_time" content="2016-08-24T09:22:14.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="web开发中的浏览器跨域整理">
+<meta name="twitter:description" content="HTTP访问控制(CORS)同源策略同源政策的目的，是为了保证用户信息的安全，防止恶意的网站窃取数据。设想这样一种情况：A网站是一家银行，用户登录以后，又去浏览其他网站。如果其他网站可以读取A网站的 Cookie，会发生什么？很显然，如果 Cookie 包含隐私（比如存款总额），这些信息就会泄漏。更可怕的是，Cookie 往往用来保存用户的登录状态，如果用户没有退出登录，其他网站就可以冒充用户，为">
+
+    
+    <link rel="alternative" href="/atom.xml" title="kingber" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/header.jpg">
+    
+    
+    <link rel="apple-touch-icon" href="/img/header.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/header.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/header.jpg" alt="kingber" title="kingber"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="kingber">kingber</a></h1>
+				<h2 class="blog-motto">关注简书【@<a href="http://www.jianshu.com/users/1a61c084f8fc/latest_articles" target="_blank" style="display:inline;color:blue">进击的诺基亚</a>】，欢迎前来交流^_^</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/categories">分类</a></li>
+					
+						<li><a href="/archives">时间线</a></li>
+					
+						<li><a href="/about">个人简介</a></li>
+					
+					<li><a href="http://git.kangbiao.org" target="_blank">代码仓库</a></li>
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:kangbiao.org">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/07/15/cors_summary/" title="web开发中的浏览器跨域整理" itemprop="url">web开发中的浏览器跨域整理</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="kangbiao" target="_blank" itemprop="author">kangbiao</a>
+		
+  <p class="article-time">
+    <time datetime="2016-07-15T14:40:44.000Z" itemprop="datePublished"> 发表于 2016-07-15</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP访问控制-CORS"><span class="toc-number">1.</span> <span class="toc-text">HTTP访问控制(CORS)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#什么是跨域"><span class="toc-number">2.</span> <span class="toc-text">什么是跨域</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#六种跨域方式"><span class="toc-number">3.</span> <span class="toc-text">六种跨域方式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#通过浏览器对象解决"><span class="toc-number">3.1.</span> <span class="toc-text">通过浏览器对象解决</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#客户端和服务端配合实现jsonp"><span class="toc-number">3.2.</span> <span class="toc-text">客户端和服务端配合实现jsonp</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#采用HTML5中的postMessage解决"><span class="toc-number">3.3.</span> <span class="toc-text">采用HTML5中的postMessage解决</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#服务器响应头控制-CORS-跨域资源共享"><span class="toc-number">3.4.</span> <span class="toc-text">服务器响应头控制(CORS 跨域资源共享)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#服务器代理"><span class="toc-number">3.5.</span> <span class="toc-text">服务器代理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#反向代理"><span class="toc-number">3.6.</span> <span class="toc-text">反向代理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考文章"><span class="toc-number">4.</span> <span class="toc-text">参考文章</span></a></li></ol>
+		
+		</div>
+		
+		<h2 id="HTTP访问控制-CORS"><a href="#HTTP访问控制-CORS" class="headerlink" title="HTTP访问控制(CORS)"></a>HTTP访问控制(CORS)</h2><p><strong>同源策略</strong><br>同源政策的目的，是为了保证用户信息的安全，防止恶意的网站窃取数据。<br>设想这样一种情况：A网站是一家银行，用户登录以后，又去浏览其他网站。如果其他网站可以读取A网站的 Cookie，会发生什么？<br>很显然，如果 Cookie 包含隐私（比如存款总额），这些信息就会泄漏。更可怕的是，Cookie 往往用来保存用户的登录状态，如果用户没有退出登录，其他网站就可以冒充用户，为所欲为。因为浏览器同时还规定，提交表单不受同源政策的限制。<br>由此可见，”同源政策”是必需的，否则 Cookie 可以共享，互联网就毫无安全可言了。<br><strong>为什么不能跨域访问</strong><br>跨域并非浏览器限制了发起跨站请求，而是跨站请求可以正常发起，但是返回结果被浏览器拦截了。最好的例子是CSRF跨站攻击原理，无论是否跨域，请求是发送到了后端服务器，注意：有些浏览器不允许从HTTPS的域跨域访问HTTP，比如Chrome和Firefox，这些浏览器在请求还未发出的时候就会拦截请求，这是一个特例。所以只有服务器允许跨域，并且在相应包的头信息里面指明允许跨域，那么跨域请求的响应数据就不会被浏览器拦截丢弃了。</p>
+<h2 id="什么是跨域"><a href="#什么是跨域" class="headerlink" title="什么是跨域"></a>什么是跨域</h2><table>
+<thead>
+<tr>
+<th>URL1</th>
+<th>URL2</th>
+<th>是否跨域</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="http://kangbiao.org/index">http://kangbiao.org/index</a></td>
+<td><a href="https://kangbiao.org/index">https://kangbiao.org/index</a></td>
+<td>是</td>
+<td>协议不同</td>
+</tr>
+<tr>
+<td><a href="http://kangbiao.org/index">http://kangbiao.org/index</a></td>
+<td><a href="http://kangbiao.org:8080/index">http://kangbiao.org:8080/index</a></td>
+<td>是</td>
+<td>端口号不同</td>
+</tr>
+<tr>
+<td><a href="http://kangbiao.org/index">http://kangbiao.org/index</a></td>
+<td><a href="http://baidu.org/index" target="_blank" rel="external">http://baidu.org/index</a></td>
+<td>是</td>
+<td>主机不同</td>
+</tr>
+<tr>
+<td><a href="http://kangbiao.org/index">http://kangbiao.org/index</a></td>
+<td><a href="http://t1.kangbiao.org/index" target="_blank" rel="external">http://t1.kangbiao.org/index</a></td>
+<td>是</td>
+<td>主机不同</td>
+</tr>
+</tbody>
+</table>
+<p>通过上面的比较可以归纳出，跨域是指协议、主机地址、端口号这三个条件只要有一个不同则认为是跨域。</p>
+<h2 id="六种跨域方式"><a href="#六种跨域方式" class="headerlink" title="六种跨域方式"></a>六种跨域方式</h2><h3 id="通过浏览器对象解决"><a href="#通过浏览器对象解决" class="headerlink" title="通过浏览器对象解决"></a>通过浏览器对象解决</h3><p><strong>document.domain(适用于子域跨域)</strong><br>在同源策略中有一个例外，脚本可以设置 <a href="https://developer.mozilla.org/zh-CN/DOM/document.domain" target="_blank" rel="external">document.domain</a><br> 的值为当前域的一个后缀，如果这样做的话，短的域将作为后续同源检测的依据。例如，假设在 <a href="http://t1.kangbiao.org/index" target="_blank" rel="external">http://t1.kangbiao.org/index</a> 中的一个js脚本执行了下列语句：<br>document.domain = “kanbgiao.org”;<br>这条语句执行之后，页面将会成功地通过对 <a href="http://company.com/index" target="_blank" rel="external">http://company.com/index</a><br> 的同源检测。但是不能通过设置 document.domain = “notkangbiao.org”;完成对其他域的访问，该方法只适用于子域和父域之间的跨域解决。</p>
+<blockquote>
+<p>使用document.domain来让子域安全地访问其父域，需要同时将子域和父域的document.domain设置为相同的值，没有这么做的话会导致授权错误。</p>
+</blockquote>
+<p><strong>window.name</strong><br>这种方案实用性不高，实现也挺麻烦，也不够灵活，所以我就不详细写了，有兴趣可以参考<a href="http://www.cnblogs.com/rainman/archive/2011/02/21/1960044.html" target="_blank" rel="external">这篇文章</a></p>
+<h3 id="客户端和服务端配合实现jsonp"><a href="#客户端和服务端配合实现jsonp" class="headerlink" title="客户端和服务端配合实现jsonp"></a>客户端和服务端配合实现jsonp</h3><p>jsonp其实就是动态创建js脚本。虽然浏览器默认禁止了跨域访问，但并不禁止在页面中引用其他域的JS文件，并可以自由执行引入的JS文件中的函数，因此可以将script的src属性设为需要跨域的接口地址，但是需要服务器将数据组装成js变量定义或者函数传回来，举例如下：<br>比如kangbiao.org/index 需要调用t1.kangbiao.org/getServerInfo接口获取服务器信息，原来该接口的返回是:<br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  <span class="attr">"ip"</span>:<span class="string">"192.168.1.1"</span>,</div><div class="line">  <span class="attr">"cpu"</span>:<span class="string">"Intel i5"</span>,</div><div class="line">  <span class="attr">"network"</span>:<span class="string">"100M"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>现在为了配合jsonp的话返回格式应该如下：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">  <span class="keyword">var</span> response=&#123;</div><div class="line">  <span class="string">"ip"</span>:<span class="string">"192.168.1.1"</span>,</div><div class="line">  <span class="string">"cpu"</span>:<span class="string">"Intel i5"</span>,</div><div class="line">  <span class="string">"network"</span>:<span class="string">"100M"</span></div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<p>所以jsonp就是在返回数据中定义一个js变量或者函数来实现动态创建js脚本，这样做的缺点也显而易见，会出现变量污染或者函数重名(可以通过生命一个服务器专用的函数对象解决)，而且服务器和前端脚本变量绑定太强，不是很灵活。</p>
+<h3 id="采用HTML5中的postMessage解决"><a href="#采用HTML5中的postMessage解决" class="headerlink" title="采用HTML5中的postMessage解决"></a>采用HTML5中的<a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Window/postMessage" target="_blank" rel="external">postMessage</a>解决</h3><p>postMessage可以实现窗口和窗口，页面和iframe，页面和窗口间的跨域通信。<br>postMessage需要源网站和跨域网站同时实现两个接口postMessage(发送数据)和addEventListener(监听事件，接受数据)</p>
+<blockquote>
+<p>otherWindow.postMessage(message, targetOrigin);</p>
+</blockquote>
+<p><em>otherWindow</em><br>其他窗口的一个引用，比如iframe的contentWindow属性、执行<a href="https://developer.mozilla.org/en-US/docs/DOM/window.open" target="_blank" rel="external">window.open</a>返回的窗口对象、或者是命名过或数值索引的<a href="https://developer.mozilla.org/en-US/docs/DOM/window.frames" target="_blank" rel="external">window.frames</a>。</p>
+<p><em>message</em><br>将要发送到其他 window的数据。</p>
+<p><em>targetOrigin</em><br>通过窗口的origin属性来指定哪些窗口能接收到消息事件，其值可以是字符串”*“（表示无限制）或者一个URI。在发送消息的时候，如果目标窗口的协议、主机地址或端口这三者的任意一项不匹配targetOrigin提供的值，那么消息就不会被发送；只有三者完全匹配，消息才会被发送。这个机制用来控制消息可以发送到哪些窗口；例如，当用postMessage传送密码时，这个参数就显得尤为重要，必须保证它的值与这条包含密码的信息的预期接受者的orign属性完全一致，来防止密码被恶意的第三方截获。如果你明确的知道消息应该发送到哪个窗口，那么请始终提供一个有确切值的targetOrigin，而不是*。不提供确切的目标将导致数据泄露到任何对数据感兴趣的恶意站点。</p>
+<blockquote>
+<p>target.addEventListener(type, listener[, useCapture]);</p>
+</blockquote>
+<p><em>type</em><br>表示所监听<a href="https://developer.mozilla.org/zh-CN/docs/DOM/event.type" target="_blank" rel="external">事件类型</a>的一个字符串。</p>
+<p><em>listener</em><br>当指定的事件类型发生时被通知到的一个对象。该参数必是实现<br><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/EventListener" target="_blank" rel="external">EventListener
+</a> 接口的一个对象或函数。</p>
+<p><em>useCapture</em><br>  可选<br>如果值为true， useCapture表示用户希望发起捕获。 在发起捕获之后， 只要Dom子树下发生了该事件类型，都会先被派发到该注册监听器，然后再被派发到Dom子树中的注册监听器中。并且向上冒泡的事件不会触发那些发起捕获的事件监听器。进一步的解释可以查看 <a href="http://www.w3.org/TR/DOM-Level-3-Events/#event-flow" target="_blank" rel="external">DOM Level 3 Events</a> 文档。 请注意该参数并不是在所有的浏览器版本中都是可选的。如果没有指定， useCapture默认为false 。</p>
+<p>两个函数的定义如上，addEventListener不是html5中特有的，postMessage是html新增实现跨域通信的。<br>如果需要跨域交换数据，则需要两边都需要同时实现这两个接口，才能交换数据，不然只能单方向的接收或者发送数据。一般的实现是在addEventListener的回掉函数中通过event.data获取到传过来的数据后，再次调用postMessage将处理后的数据返回给消息来源对象。这样实现好处就是完全不需要后端的参与。但是有一定的安全风险，配合xss可以导致用户凭证信息被盗取。<br>具体的代码示例参考<a href="http://www.runoob.com/jsref/met-element-addeventlistener.html" target="_blank" rel="external">postMessage实示例</a></p>
+<h3 id="服务器响应头控制-CORS-跨域资源共享"><a href="#服务器响应头控制-CORS-跨域资源共享" class="headerlink" title="服务器响应头控制(CORS 跨域资源共享)"></a>服务器响应头控制(CORS 跨域资源共享)</h3><p>这种方法是我认为最好的方法，由服务器决定是否允许跨域，如果允许，服务器在响应头中添加相应的字段告诉浏览器此次跨域合法，则浏览器不会将请求包丢弃(文章开头说了跨域其实是浏览器的一种行为)，从而完成跨域。<br>这种方法的详细操作我就不多说了，参考廖雪峰的<a href="http://www.ruanyifeng.com/blog/2016/04/cors.html" target="_blank" rel="external">这篇文章</a><br>主要叙述下服务端怎么设置响应头<br>在PHP中可以中国header()函数设置允许跨域字段<br>在java中可以通过设置reponse.setHeader()函数来设置，spring4.2及以上版本提供了@CrossOrigin注解来方便实现跨域。</p>
+<h3 id="服务器代理"><a href="#服务器代理" class="headerlink" title="服务器代理"></a>服务器代理</h3><p>服务器代理就是将需要跨域访问的地址通过服务器访问(服务器此时作为客户端，不会受同源策略限制)，然后由服务器返回结果。<br>例如kangbiao.org/index 页面需要访问api.weibo.com/getNews 来获取最新新闻，我们可以通过在kangbiao.org的服务器上面多增加一个接口 kangbiao.org/api?url=api.weibo.com/getNews ，然后再服务器内部，该接口所做的事情就是向api.weibo.com/getNews 发起请求即可，然后将结果返回。<br>这样做的好处是实现十分简单，而且可以访问任何跨域站点，缺点就是需要新增维护一个接口，而且如果服务器是通过代理网关，只能内网通信的话也很麻烦。</p>
+<h3 id="反向代理"><a href="#反向代理" class="headerlink" title="反向代理"></a>反向代理</h3><p>反向代理也是在服务器实现的，主要是通过正则匹配url，匹配成功后重写到目标地址即可，这种方法可以实现所有网站的跨域，不需要服务器提供跨域支持，个人认为比较方便，甚至可以配置kangbiao.org/proxy/weibo/实现将api.weibo.com域的接口整合到我们自己的网站下面来，并且程序不需要做任何改动，改下nginx的配置文件即可。具体的实现方案很多，google或者百度nginx反向代理实现跨域即可。</p>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><ul>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Access_control_CORS" target="_blank" rel="external">firefox开发者文档-CORS</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Window/postMessage" target="_blank" rel="external">firefox开发者文档-postMessage</a></li>
+<li><a href="https://zh.wikipedia.org/wiki/BOM" target="_blank" rel="external">维基百科-BOM</a></li>
+</ul>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/web前端/">web前端</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/跨域/">跨域</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://kangbiao.org/2016/07/15/cors_summary/" data-title="web开发中的浏览器跨域整理 | kingber" data-tsina="null" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2016/07/16/logAgent/" title="本地日志分析上报脚本实现思路梳理">
+  <strong>上一篇：</strong><br/>
+  <span>
+  本地日志分析上报脚本实现思路梳理</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2016/07/10/websocket-with-rabbitmq/"  title="WebSocket加RabbitMQ实现web应用实时获取服务器推送">
+ <strong>下一篇：</strong><br/> 
+ <span>WebSocket加RabbitMQ实现web应用实时获取服务器推送
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2016/07/15/cors_summary/" data-title="web开发中的浏览器跨域整理" data-url="http://kangbiao.org/2016/07/15/cors_summary/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP访问控制-CORS"><span class="toc-number">1.</span> <span class="toc-text">HTTP访问控制(CORS)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#什么是跨域"><span class="toc-number">2.</span> <span class="toc-text">什么是跨域</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#六种跨域方式"><span class="toc-number">3.</span> <span class="toc-text">六种跨域方式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#通过浏览器对象解决"><span class="toc-number">3.1.</span> <span class="toc-text">通过浏览器对象解决</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#客户端和服务端配合实现jsonp"><span class="toc-number">3.2.</span> <span class="toc-text">客户端和服务端配合实现jsonp</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#采用HTML5中的postMessage解决"><span class="toc-number">3.3.</span> <span class="toc-text">采用HTML5中的postMessage解决</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#服务器响应头控制-CORS-跨域资源共享"><span class="toc-number">3.4.</span> <span class="toc-text">服务器响应头控制(CORS 跨域资源共享)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#服务器代理"><span class="toc-number">3.5.</span> <span class="toc-text">服务器代理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#反向代理"><span class="toc-number">3.6.</span> <span class="toc-text">反向代理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考文章"><span class="toc-number">4.</span> <span class="toc-text">参考文章</span></a></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/CS原理/" title="CS原理">CS原理<sup>3</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/JAVA/" title="JAVA">JAVA<sup>12</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/PYTHON/" title="PYTHON">PYTHON<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/SQL-NoSQL/" title="SQL&amp;NoSQL">SQL&amp;NoSQL<sup>4</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/web前端/" title="web前端">web前端<sup>3</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/大数据/" title="大数据">大数据<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/接口文档/" title="接口文档">接口文档<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/数据结构和算法/" title="数据结构和算法">数据结构和算法<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/服务器/" title="服务器">服务器<sup>6</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/版本管理/" title="版本管理">版本管理<sup>2</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/ubuntu/" title="ubuntu">ubuntu<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/shell/" title="shell">shell<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/j2ee/" title="j2ee">j2ee<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/python/" title="python">python<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/notify/" title="notify">notify<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/MQ/" title="MQ">MQ<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/设计模式/" title="设计模式">设计模式<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/跨域/" title="跨域">跨域<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/crontab/" title="crontab">crontab<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/datatable/" title="datatable">datatable<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/emmet/" title="emmet">emmet<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/hadoop/" title="hadoop">hadoop<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/hash/" title="hash">hash<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/gitlab/" title="gitlab">gitlab<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/idea/" title="idea">idea<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/泛型/" title="泛型">泛型<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/php/" title="php">php<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/jvm/" title="jvm">jvm<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/内存管理/" title="内存管理">内存管理<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/算法/" title="算法">算法<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://www.liaoshichao.com" target="_blank" title="老廖的个人博客">老廖的个人博客</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://thehackercat.me" target="_blank" title="TheHackerCat">TheHackerCat</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://jm.taobao.org" target="_blank" title="淘宝中间件团队">淘宝中间件团队</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.imsiren.com" target="_blank" title="PHP性能优化">PHP性能优化</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://tutorials.jenkov.com" target="_blank" title="全栈开发参考(en)">全栈开发参考(en)</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> 欢迎访问我的个人博客 <br/>
+			博客正在迁移至简书平台</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/3496429803" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/kangbiao" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		
+		
+		<a href="http://www.zhihu.com/people/kang-biao-94" target="_blank" class="icon-zhihu" title="知乎"></a>
+		
+		
+		
+		<a href="mailto:kangbiao@kangbiao.org" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2017 
+		
+		<a href="/about" target="_blank" title="kangbiao">kangbiao</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"kingber"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?e6d1f421bbc9962127a50488f9ed37d1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>

@@ -1,0 +1,653 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>hadoop学习笔记之MapReduce初探 | kingber</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="kangbiao">
+    
+
+    
+    <meta name="description" content="基本概念
+在python和swift中，map，reduce都是一种高阶函数（还有filter），那么什么是高阶函数呢？这里引用一下廖雪峰大神的总结，高阶函数就是指函数参数可以接收其他函数，还有一种函数叫作偏函数，就是指函数的返回值是一个函数。高阶函数和偏函数的概念可以阅读函数式编程一书得到参考java8的lambda表达式就是一种高阶函数的实现。
+
+好吧，回归正题，那么什么是map，什么又是re">
+<meta property="og:type" content="article">
+<meta property="og:title" content="hadoop学习笔记之MapReduce初探">
+<meta property="og:url" content="http://kangbiao.org/2015/12/28/hadoop-learn-note-2015-12-28/index.html">
+<meta property="og:site_name" content="kingber">
+<meta property="og:description" content="基本概念
+在python和swift中，map，reduce都是一种高阶函数（还有filter），那么什么是高阶函数呢？这里引用一下廖雪峰大神的总结，高阶函数就是指函数参数可以接收其他函数，还有一种函数叫作偏函数，就是指函数的返回值是一个函数。高阶函数和偏函数的概念可以阅读函数式编程一书得到参考java8的lambda表达式就是一种高阶函数的实现。
+
+好吧，回归正题，那么什么是map，什么又是re">
+<meta property="og:image" content="http://7xlqn0.com1.z0.glb.clouddn.com/shuffle-official.png">
+<meta property="og:updated_time" content="2016-07-11T12:11:10.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="hadoop学习笔记之MapReduce初探">
+<meta name="twitter:description" content="基本概念
+在python和swift中，map，reduce都是一种高阶函数（还有filter），那么什么是高阶函数呢？这里引用一下廖雪峰大神的总结，高阶函数就是指函数参数可以接收其他函数，还有一种函数叫作偏函数，就是指函数的返回值是一个函数。高阶函数和偏函数的概念可以阅读函数式编程一书得到参考java8的lambda表达式就是一种高阶函数的实现。
+
+好吧，回归正题，那么什么是map，什么又是re">
+<meta name="twitter:image" content="http://7xlqn0.com1.z0.glb.clouddn.com/shuffle-official.png">
+
+    
+    <link rel="alternative" href="/atom.xml" title="kingber" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/header.jpg">
+    
+    
+    <link rel="apple-touch-icon" href="/img/header.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/header.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/header.jpg" alt="kingber" title="kingber"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="kingber">kingber</a></h1>
+				<h2 class="blog-motto">关注简书【@<a href="http://www.jianshu.com/users/1a61c084f8fc/latest_articles" target="_blank" style="display:inline;color:blue">进击的诺基亚</a>】，欢迎前来交流^_^</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/categories">分类</a></li>
+					
+						<li><a href="/archives">时间线</a></li>
+					
+						<li><a href="/about">个人简介</a></li>
+					
+					<li><a href="http://git.kangbiao.org" target="_blank">代码仓库</a></li>
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:kangbiao.org">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/12/28/hadoop-learn-note-2015-12-28/" title="hadoop学习笔记之MapReduce初探" itemprop="url">hadoop学习笔记之MapReduce初探</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="kangbiao" target="_blank" itemprop="author">kangbiao</a>
+		
+  <p class="article-time">
+    <time datetime="2015-12-28T12:25:56.000Z" itemprop="datePublished"> 发表于 2015-12-28</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#基本概念"><span class="toc-number">1.</span> <span class="toc-text">基本概念</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Mapper和Reducer"><span class="toc-number">2.</span> <span class="toc-text">Mapper和Reducer</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#新旧api差别"><span class="toc-number">3.</span> <span class="toc-text">新旧api差别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MapReduce的横向（水平）扩展"><span class="toc-number">4.</span> <span class="toc-text">MapReduce的横向（水平）扩展</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#combiner"><span class="toc-number">5.</span> <span class="toc-text">combiner</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Streaming-API"><span class="toc-number">6.</span> <span class="toc-text">Streaming API</span></a></li></ol>
+		
+		</div>
+		
+		<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><blockquote>
+<p>在python和swift中，map，reduce都是一种高阶函数（还有filter），那么什么是高阶函数呢？这里引用一下廖雪峰大神的总结，高阶函数就是指函数参数可以接收其他函数，还有一种函数叫作偏函数，就是指函数的返回值是一个函数。<br>高阶函数和偏函数的概念可以阅读函数式编程一书得到参考<br>java8的lambda表达式就是一种高阶函数的实现。</p>
+</blockquote>
+<p>好吧，回归正题，那么什么是map，什么又是reduce呢？<br><strong>map</strong>：map就是指把输入的数据集中的每一个元素进行处理后输出，这种输入输出通常是键值对形式的。<br><strong>reduce</strong>：reduce的英文释义是规约，也就是说reduce函数是将一定的数据集进行循环的处理得到最终的结果。比如找出每个数据集中的最大值。</p>
+<h2 id="Mapper和Reducer"><a href="#Mapper和Reducer" class="headerlink" title="Mapper和Reducer"></a>Mapper和Reducer</h2><p><strong>Mapper</strong>是泛型类型，分别是map函数的输入键，输入值，输出建和输出值，hadoop在java自带的基本类型之上还封装了一套适用于网络序列化传输的基本类型，这些类型位于or.apache.hadoop.io包中，例如Text类型相当于java的String类型。<br><strong>Reducer</strong>也是泛型类型，类型参数和Mapper一样，Reducer提供了强大的数据比较和抽取能力。<br><strong>Job</strong>是用来指定作业执行规范的，主要包括如下几步：</p>
+<ol>
+<li>设置作业完整的类名</li>
+<li>设置作业名称</li>
+<li>设置输入和输入源（可以来自网络，可以来自文件系统）</li>
+<li>设置map（即对数据进行处理的Mapper实现类）和设置reduce（Reducer的实现类）。</li>
+</ol>
+<h2 id="新旧api差别"><a href="#新旧api差别" class="headerlink" title="新旧api差别"></a>新旧api差别</h2><blockquote>
+<p>参考官网</p>
+</blockquote>
+<h2 id="MapReduce的横向（水平）扩展"><a href="#MapReduce的横向（水平）扩展" class="headerlink" title="MapReduce的横向（水平）扩展"></a>MapReduce的横向（水平）扩展</h2><blockquote>
+<p>为了实现横向扩展，需要将数据存储在类似于HDFS的分布式文件系统中。</p>
+</blockquote>
+<p>在MapReduce的作业中，有两类节点控制着作业的执行，一类是jobtracker（作业节点）和一系列的tasktracker（任务节点），一个作业是由多个任务（map任务和reduce任务）组成的。</p>
+<p>Hadoop将数据分为大小相等的数据块，每个数据块就是一个分片，并且为每个分片指定一个map任务，由该任务来运行用户自定义的map函数从而处理分片中的每条记录。</p>
+<p>分片的大小决定了程序的效率和资源的利用率，如果分片太小，那么管理分片的总时间和构建map任务的时间将会决定整个处理时间，如果分片太大，又没有充分利用map函数提供的处理能力，所以合适的分片大小至关重要。一个合理的分片大小大概是HDFS的一个块的大小。默认是64MB。如果超过了该大小，那么输入源的数据就会存储在两个机架上面，这样就会产生网络传输，降低了效率。</p>
+<p>对于map任务，一般运行在输入数据存储的机器上，这样不需要使用网络带宽资源，提高了IO效率。如果该map任务在处理其他的任务，则需要协调其他机架上面的map任务来进行处理，这样还是会产生网络传输。但是这么做，会大大的减少这种情况的发生。</p>
+<p>map任务的输出一般都是存储在任务执行的机器上面，因为map输出的数据大多是一个中间数据，只需要临时存储，在传给reduce任务处理之后，就可以删除该中间结果。如果中间数据传输给reduce任务失败，则会在另一个节点上重新运行map任务重新传输从而避免再次失败。</p>
+<p>reduce任务可以接收来自多个map任务的输出，这之间复杂的数据传输流称为shuffle。shuffle就是怎样把map task的输出结果有效地传送到reduce端，也可以理解为 Shuffle描述着数据从map task输出到reduce task输入的这段过程。<br>下图是官方的shuffle解释图<br><img src="http://7xlqn0.com1.z0.glb.clouddn.com/shuffle-official.png" alt="shuffle官网解释图"><br><a href="http://langyu.iteye.com/blog/992916" target="_blank" rel="external">shuffle参考资料</a></p>
+<h2 id="combiner"><a href="#combiner" class="headerlink" title="combiner"></a>combiner</h2><p>为了减少map和reduce之间的数据传输量，充分利用集群之间的带宽，可以对map的输出执行一次或者多次的combiner函数，相当于对于单个map进行的规约操作（reduce是对于多个map任务的规约）.但是combiner的适用场景有限，例如平均数的计算可能就不适用-((x+y+z+a)/4+(b+c)/2)/2!=(a+b+c+x+y+z)/6，所以该函数的适用范围为对分片数据规约不会影响整个结果的场景。</p>
+<h2 id="Streaming-API"><a href="#Streaming-API" class="headerlink" title="Streaming API"></a>Streaming API</h2><p>Streaming API 使得我们可以用其他编程语言实现自己的map和reduce函数，例如用c++实现，提高程序的处理效率。<br>该API使用标准输入输出流作为hadoop和不同语言编写的map和reduce任务之间的接口。<br>当使用Streaming时需要在hadoop的运行命令里面指定streaming.jar文件的位置从而让hadoop支持其他语言。</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/大数据/">大数据</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/hadoop/">hadoop</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://kangbiao.org/2015/12/28/hadoop-learn-note-2015-12-28/" data-title="hadoop学习笔记之MapReduce初探 | kingber" data-tsina="null" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2015/12/31/hash-and-java/" title="Hash原理以及在java集合框架中的应用">
+  <strong>上一篇：</strong><br/>
+  <span>
+  Hash原理以及在java集合框架中的应用</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2015/12/20/servlet-principle/"  title="JAVA Servlet工作原理">
+ <strong>下一篇：</strong><br/> 
+ <span>JAVA Servlet工作原理
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2015/12/28/hadoop-learn-note-2015-12-28/" data-title="hadoop学习笔记之MapReduce初探" data-url="http://kangbiao.org/2015/12/28/hadoop-learn-note-2015-12-28/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#基本概念"><span class="toc-number">1.</span> <span class="toc-text">基本概念</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Mapper和Reducer"><span class="toc-number">2.</span> <span class="toc-text">Mapper和Reducer</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#新旧api差别"><span class="toc-number">3.</span> <span class="toc-text">新旧api差别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MapReduce的横向（水平）扩展"><span class="toc-number">4.</span> <span class="toc-text">MapReduce的横向（水平）扩展</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#combiner"><span class="toc-number">5.</span> <span class="toc-text">combiner</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Streaming-API"><span class="toc-number">6.</span> <span class="toc-text">Streaming API</span></a></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/CS原理/" title="CS原理">CS原理<sup>3</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/JAVA/" title="JAVA">JAVA<sup>12</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/PYTHON/" title="PYTHON">PYTHON<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/SQL-NoSQL/" title="SQL&amp;NoSQL">SQL&amp;NoSQL<sup>4</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/web前端/" title="web前端">web前端<sup>3</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/大数据/" title="大数据">大数据<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/接口文档/" title="接口文档">接口文档<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/数据结构和算法/" title="数据结构和算法">数据结构和算法<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/服务器/" title="服务器">服务器<sup>6</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/版本管理/" title="版本管理">版本管理<sup>2</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/ubuntu/" title="ubuntu">ubuntu<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/shell/" title="shell">shell<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/j2ee/" title="j2ee">j2ee<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/python/" title="python">python<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/notify/" title="notify">notify<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/MQ/" title="MQ">MQ<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/设计模式/" title="设计模式">设计模式<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/跨域/" title="跨域">跨域<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/crontab/" title="crontab">crontab<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/datatable/" title="datatable">datatable<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/emmet/" title="emmet">emmet<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/hadoop/" title="hadoop">hadoop<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/hash/" title="hash">hash<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/gitlab/" title="gitlab">gitlab<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/idea/" title="idea">idea<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/泛型/" title="泛型">泛型<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/php/" title="php">php<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/jvm/" title="jvm">jvm<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/内存管理/" title="内存管理">内存管理<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/算法/" title="算法">算法<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://www.liaoshichao.com" target="_blank" title="老廖的个人博客">老廖的个人博客</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://thehackercat.me" target="_blank" title="TheHackerCat">TheHackerCat</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://jm.taobao.org" target="_blank" title="淘宝中间件团队">淘宝中间件团队</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://www.imsiren.com" target="_blank" title="PHP性能优化">PHP性能优化</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://tutorials.jenkov.com" target="_blank" title="全栈开发参考(en)">全栈开发参考(en)</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> 欢迎访问我的个人博客 <br/>
+			博客正在迁移至简书平台</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/3496429803" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/kangbiao" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		
+		
+		<a href="http://www.zhihu.com/people/kang-biao-94" target="_blank" class="icon-zhihu" title="知乎"></a>
+		
+		
+		
+		<a href="mailto:kangbiao@kangbiao.org" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2017 
+		
+		<a href="/about" target="_blank" title="kangbiao">kangbiao</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"kingber"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?e6d1f421bbc9962127a50488f9ed37d1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>
