@@ -1,17 +1,114 @@
+<!DOCTYPE html>
 
- <!DOCTYPE HTML>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
+
+
+
+
+
+
+
+
+
+
+
   
-    <title>python使用postgresql-momoko配置 | kingber</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
-    
-    <meta name="author" content="kangbiao">
-    
 
-    
-    <meta name="description" content="size参数:int含义:最小的连接数
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.4.1" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.4.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.4.1" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.4.1',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="size参数:int含义:最小的连接数
 max_size参数:int含义:最大的连接数
 cursor_factory参数:psycopg2.extensions.cursor的子类含义:设置以后可以写一个psycopg2.extensions.cursor的子类,添加日志记录功能或者预先的数据库结果处理,格式化execute执行失败后的异常好处:可以很大程度的提高程序的灵活性,可以重新将事务封装在">
 <meta property="og:type" content="article">
@@ -28,89 +125,283 @@ cursor_factory参数:psycopg2.extensions.cursor的子类含义:设置以后可�
 max_size参数:int含义:最大的连接数
 cursor_factory参数:psycopg2.extensions.cursor的子类含义:设置以后可以写一个psycopg2.extensions.cursor的子类,添加日志记录功能或者预先的数据库结果处理,格式化execute执行失败后的异常好处:可以很大程度的提高程序的灵活性,可以重新将事务封装在">
 
-    
-    <link rel="alternative" href="/atom.xml" title="kingber" type="application/atom+xml">
-    
-    
-    <link rel="icon" href="/img/header.jpg">
-    
-    
-    <link rel="apple-touch-icon" href="/img/header.jpg">
-    <link rel="apple-touch-icon-precomposed" href="/img/header.jpg">
-    
-    <link rel="stylesheet" href="/css/style.css">
+
+
+  <link rel="alternate" href="/atom.xml" title="kingber" type="application/atom+xml" />
+
+
+
+
+  <link rel="canonical" href="http://kangbiao.org/2014/09/14/momoko/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>python使用postgresql-momoko配置 | kingber</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
 </head>
 
-  <body>
-    <header>
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">kingber</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
       
-<div>
-		
-			<div id="imglogo">
-				<a href="/"><img src="/img/header.jpg" alt="kingber" title="kingber"/></a>
-			</div>
-			
-			<div id="textlogo">
-				<h1 class="site-name"><a href="/" title="kingber">kingber</a></h1>
-				<h2 class="blog-motto">关注简书【@<a href="http://www.jianshu.com/users/1a61c084f8fc/latest_articles" target="_blank" style="display:inline;color:blue">进击的诺基亚</a>】，欢迎前来交流^_^</h2>
-			</div>
-			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
-			</a></div>
-			<nav class="animated">
-				<ul>
-					<ul>
-					 
-						<li><a href="/">首页</a></li>
-					
-						<li><a href="/categories">分类</a></li>
-					
-						<li><a href="/archives">时间线</a></li>
-					
-						<li><a href="/about">个人简介</a></li>
-					
-					<li><a href="http://git.kangbiao.org" target="_blank">代码仓库</a></li>
-					<li>
- 					
-					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
-						<label>Search</label>
-						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
-						<input type="hidden" name="q" value="site:kangbiao.org">
-					</form>
-					
-					</li>
-				</ul>
-			</nav>
+        <p class="site-subtitle">关注简书【@进击的诺基亚】，欢迎前来交流^_^</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
 </div>
 
-    </header>
-    <div id="container">
-      <div id="main" class="post" itemscope itemprop="blogPost">
+
+
+<nav class="site-nav">
   
-	<article itemprop="articleBody"> 
-		<header class="article-info clearfix">
-  <h1 itemprop="name">
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
     
-      <a href="/2014/09/14/momoko/" title="python使用postgresql-momoko配置" itemprop="url">python使用postgresql-momoko配置</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="kangbiao" target="_blank" itemprop="author">kangbiao</a>
-		
-  <p class="article-time">
-    <time datetime="2014-09-14T12:15:55.000Z" itemprop="datePublished"> 发表于 2014-09-14</time>
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
     
-  </p>
-</header>
-	<div class="article-content">
-		
-		<div id="toc" class="toc-article">
-			<strong class="toc-title">文章目录</strong>
-		
-			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#size"><span class="toc-number">1.</span> <span class="toc-text">size</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#max-size"><span class="toc-number">2.</span> <span class="toc-text">max_size</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cursor-factory"><span class="toc-number">3.</span> <span class="toc-text">cursor_factory</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#raise-connect-errors"><span class="toc-number">4.</span> <span class="toc-text">raise_connect_errors</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reconnect-interval"><span class="toc-number">5.</span> <span class="toc-text">reconnect_interval</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#setsession"><span class="toc-number">6.</span> <span class="toc-text">setsession</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#auto-shrink"><span class="toc-number">7.</span> <span class="toc-text">auto_shrink</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#shrink-period"><span class="toc-number">8.</span> <span class="toc-text">shrink_period</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#shrink-delay"><span class="toc-number">9.</span> <span class="toc-text">shrink_delay</span></a></li></ol>
-		
-		</div>
-		
-		<h2 id="size"><a href="#size" class="headerlink" title="size"></a>size</h2><p><strong>参数:</strong>int<br><strong>含义:</strong>最小的连接数</p>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://kangbiao.org/2014/09/14/momoko/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="kangbiao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="kingber">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">python使用postgresql-momoko配置
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2014-09-14 20:15:55" itemprop="dateCreated datePublished" datetime="2014-09-14T20:15:55+08:00">2014-09-14</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2016-02-19 21:11:34" itemprop="dateModified" datetime="2016-02-19T21:11:34+08:00">2016-02-19</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/PYTHON/" itemprop="url" rel="index"><span itemprop="name">PYTHON</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="size"><a href="#size" class="headerlink" title="size"></a>size</h2><p><strong>参数:</strong>int<br><strong>含义:</strong>最小的连接数</p>
 <h2 id="max-size"><a href="#max-size" class="headerlink" title="max_size"></a>max_size</h2><p><strong>参数:</strong>int<br><strong>含义:</strong>最大的连接数</p>
 <h2 id="cursor-factory"><a href="#cursor-factory" class="headerlink" title="cursor_factory"></a>cursor_factory</h2><p><strong>参数:</strong>psycopg2.extensions.cursor的子类<br><strong>含义:</strong>设置以后可以写一个psycopg2.extensions.cursor的子类,添加日志记录功能或者预先的数据库结果处理,格式化execute执行失败后的异常<br><strong>好处:</strong>可以很大程度的提高程序的灵活性,可以重新将事务封装在这个子类里面,而不用在每个执行SQL语句的地方都要写事务.<br>但是这样做只能保证单条语句或者没有关联的多条语句的事务提交和回滚,对于多个插入语句,并且这条语句需要上条语句的返回结果时,实现不是很灵活.</p>
 <p><strong>例子:</strong><br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> psycopg2</div><div class="line"><span class="keyword">import</span> psycopg2.extensions</div><div class="line"><span class="keyword">import</span> logging</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">LoggingCursor</span><span class="params">(psycopg2.extensions.cursor)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">execute</span><span class="params">(self, dict)</span>:</span></div><div class="line">        logger = logging.getLogger(<span class="string">'sql_debug'</span>)</div><div class="line">        logger.info(self.mogrify(sql, args))</div><div class="line"></div><div class="line">        <span class="keyword">try</span>:</div><div class="line">        	psycopg2.extensions.cursor.execute(self, <span class="string">"BEGIN"</span>)</div><div class="line">            <span class="keyword">for</span> sql <span class="keyword">in</span> dict.keys():</div><div class="line">            	psycopg2.extensions.cursor.execute(self, sql, dict[sql])</div><div class="line">            psycopg2.extensions.cursor.execute(self, <span class="string">"COMMIT"</span>)</div><div class="line">        <span class="keyword">except</span> Exception, exc:</div><div class="line">        	psycopg2.extensions.cursor.execute(self, <span class="string">"ROLLBACK"</span>)</div><div class="line">            logger.error(<span class="string">"%s: %s"</span> % (exc.__class__.__name__, exc))</div><div class="line">            <span class="keyword">raise</span></div><div class="line"></div><div class="line">conn = psycopg2.connect(DSN)</div><div class="line">cur = conn.cursor(cursor_factory=LoggingCursor)</div><div class="line">sql_args=&#123;</div><div class="line">	<span class="string">"INSERT INTO mytable VALUES (%s, %s, %s)"</span>:(<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>),</div><div class="line">    <span class="string">"INSERT INTO mytable VALUES (%s, %s, %s)"</span>:(<span class="number">11</span>,<span class="number">12</span>,<span class="number">13</span>)</div><div class="line">&#125;</div><div class="line"><span class="comment"># 可以自动完成事务</span></div><div class="line">cur.execute(sql_args)</div><div class="line"></div><div class="line">这样就能够在执行的时候打印出sql语句和自定义异常</div></pre></td></tr></table></figure></p>
@@ -120,514 +411,481 @@ cursor_factory参数:psycopg2.extensions.cursor的子类含义:设置以后可�
 <h2 id="auto-shrink"><a href="#auto-shrink" class="headerlink" title="auto_shrink"></a>auto_shrink</h2><p><strong>参数:</strong>bool<br><strong>含义:</strong>当指定了数据库连接池的max-size后,会自动回收超过最小连接数的连接.当连接数达到最大时才会触发该函数执行连接回收.</p>
 <h2 id="shrink-period"><a href="#shrink-period" class="headerlink" title="shrink_period"></a>shrink_period</h2><p><strong>参数:</strong>datetime.timedelta()<br><strong>含义:</strong>设置多久执行一次连接回收,前提是设置了auto_shrink为true.</p>
 <h2 id="shrink-delay"><a href="#shrink-delay" class="headerlink" title="shrink_delay"></a>shrink_delay</h2><p><strong>参数:</strong>datetime.timedelta()<br><strong>含义:</strong>设置多久(时,分,秒)没有用的连接被回收.前提是设置了auto_shrink为true.但是如果回收了连接后的连接数小于最小连接,就不会被回收.</p>
-  
-	</div>
-		<footer class="article-footer clearfix">
-<div class="article-catetags">
 
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/PYTHON/">PYTHON</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/python/">python</a><a href="/tags/momoko/">momoko</a><a href="/tags/postgresql/">postgresql</a>
-  </div>
-
-</div>
-
-
-
-	<div class="article-share" id="share">
-	
-	  <div data-url="http://kangbiao.org/2014/09/14/momoko/" data-title="python使用postgresql-momoko配置 | kingber" data-tsina="null" class="share clearfix">
-	  </div>
-	
-	</div>
-
-
-</footer>
-
-   	       
-	</article>
-	
-<nav class="article-nav clearfix">
- 
- <div class="prev" >
- <a href="/2015/01/02/database-optimize/" title="mysql数据库优化">
-  <strong>上一篇：</strong><br/>
-  <span>
-  mysql数据库优化</span>
-</a>
-</div>
-
-
-<div class="next">
-<a href="/2014/09/14/datatable使用/"  title="记录一下对datatable这个表格插件的使用">
- <strong>下一篇：</strong><br/> 
- <span>记录一下对datatable这个表格插件的使用
-</span>
-</a>
-</div>
-
-</nav>
-
-	
-<section id="comments" class="comment">
-	<div class="ds-thread" data-thread-key="2014/09/14/momoko/" data-title="python使用postgresql-momoko配置" data-url="http://kangbiao.org/2014/09/14/momoko/"></div>
-</section>
-
-
-</div>  
-      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
-
-  <div id="toc" class="toc-aside">
-  <strong class="toc-title">文章目录</strong>
- 
- <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#size"><span class="toc-number">1.</span> <span class="toc-text">size</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#max-size"><span class="toc-number">2.</span> <span class="toc-text">max_size</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cursor-factory"><span class="toc-number">3.</span> <span class="toc-text">cursor_factory</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#raise-connect-errors"><span class="toc-number">4.</span> <span class="toc-text">raise_connect_errors</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reconnect-interval"><span class="toc-number">5.</span> <span class="toc-text">reconnect_interval</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#setsession"><span class="toc-number">6.</span> <span class="toc-text">setsession</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#auto-shrink"><span class="toc-number">7.</span> <span class="toc-text">auto_shrink</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#shrink-period"><span class="toc-number">8.</span> <span class="toc-text">shrink_period</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#shrink-delay"><span class="toc-number">9.</span> <span class="toc-text">shrink_delay</span></a></li></ol>
- 
-  </div>
-
-<div id="asidepart">
-<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
-<aside class="clearfix">
-
-  
-<div class="categorieslist">
-	<p class="asidetitle">分类</p>
-		<ul>
-		
-		  
-			<li><a href="/categories/CS原理/" title="CS原理">CS原理<sup>3</sup></a></li>
-		  
-		
-		  
-			<li><a href="/categories/JAVA/" title="JAVA">JAVA<sup>12</sup></a></li>
-		  
-		
-		  
-			<li><a href="/categories/PYTHON/" title="PYTHON">PYTHON<sup>2</sup></a></li>
-		  
-		
-		  
-			<li><a href="/categories/SQL-NoSQL/" title="SQL&amp;NoSQL">SQL&amp;NoSQL<sup>4</sup></a></li>
-		  
-		
-		  
-			<li><a href="/categories/web前端/" title="web前端">web前端<sup>3</sup></a></li>
-		  
-		
-		  
-			<li><a href="/categories/大数据/" title="大数据">大数据<sup>1</sup></a></li>
-		  
-		
-		  
-			<li><a href="/categories/接口文档/" title="接口文档">接口文档<sup>1</sup></a></li>
-		  
-		
-		  
-			<li><a href="/categories/数据结构和算法/" title="数据结构和算法">数据结构和算法<sup>2</sup></a></li>
-		  
-		
-		  
-			<li><a href="/categories/服务器/" title="服务器">服务器<sup>6</sup></a></li>
-		  
-		
-		  
-			<li><a href="/categories/版本管理/" title="版本管理">版本管理<sup>2</sup></a></li>
-		  
-		
-		</ul>
-</div>
-
-
-  
-<div class="tagslist">
-	<p class="asidetitle">标签</p>
-		<ul class="clearfix">
-		
-			
-				<li><a href="/tags/ubuntu/" title="ubuntu">ubuntu<sup>4</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/shell/" title="shell">shell<sup>2</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/j2ee/" title="j2ee">j2ee<sup>2</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/python/" title="python">python<sup>2</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/notify/" title="notify">notify<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/bash/" title="bash">bash<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/算法/" title="算法">算法<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/跨域/" title="跨域">跨域<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/datatable/" title="datatable">datatable<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/MQ/" title="MQ">MQ<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/emmet/" title="emmet">emmet<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/gitlab/" title="gitlab">gitlab<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/hash/" title="hash">hash<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/泛型/" title="泛型">泛型<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/idea/" title="idea">idea<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/hadoop/" title="hadoop">hadoop<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/php/" title="php">php<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/jvm/" title="jvm">jvm<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/内存管理/" title="内存管理">内存管理<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/设计模式/" title="设计模式">设计模式<sup>1</sup></a></li>
-			
-		
-		</ul>
-</div>
-
-
-  <div class="linkslist">
-  <p class="asidetitle">友情链接</p>
-    <ul>
-        
-          <li>
-            
-            	<a href="http://www.liaoshichao.com" target="_blank" title="老廖的个人博客">老廖的个人博客</a>
-            
-          </li>
-        
-          <li>
-            
-            	<a href="http://thehackercat.me" target="_blank" title="TheHackerCat">TheHackerCat</a>
-            
-          </li>
-        
-          <li>
-            
-            	<a href="http://jm.taobao.org" target="_blank" title="淘宝中间件团队">淘宝中间件团队</a>
-            
-          </li>
-        
-          <li>
-            
-            	<a href="http://www.imsiren.com" target="_blank" title="PHP性能优化">PHP性能优化</a>
-            
-          </li>
-        
-          <li>
-            
-            	<a href="http://tutorials.jenkov.com" target="_blank" title="全栈开发参考(en)">全栈开发参考(en)</a>
-            
-          </li>
-        
-    </ul>
-</div>
-
-  <div class="rsspart">
-	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
-</div>
-
-</aside>
-</div>
-    </div>
-    <footer><div id="footer" >
-	
-	<div class="line">
-		<span></span>
-		<div class="author"></div>
-	</div>
-	
-	
-	<section class="info">
-		<p> 欢迎访问我的个人博客 <br/>
-			博客正在迁移至简书平台</p>
-	</section>
-	 
-	<div class="social-font" class="clearfix">
-		
-		<a href="http://weibo.com/3496429803" target="_blank" class="icon-weibo" title="微博"></a>
-		
-		
-		<a href="https://github.com/kangbiao" target="_blank" class="icon-github" title="github"></a>
-		
-		
-		
-		
-		
-		
-		
-		<a href="http://www.zhihu.com/people/kang-biao-94" target="_blank" class="icon-zhihu" title="知乎"></a>
-		
-		
-		
-		<a href="mailto:kangbiao@kangbiao.org" target="_blank" class="icon-email" title="Email Me"></a>
-		
-	</div>
-			
-		
-
-		<p class="copyright">
-		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2018 
-		
-		<a href="/about" target="_blank" title="kangbiao">kangbiao</a>
-		
-		
-		</p>
-</div>
-</footer>
-    <script src="/js/jquery-2.0.3.min.js"></script>
-<script src="/js/jquery.imagesloaded.min.js"></script>
-<script src="/js/gallery.js"></script>
-<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
-
-<script type="text/javascript">
-$(document).ready(function(){ 
-  $('.navbar').click(function(){
-    $('header nav').toggleClass('shownav');
-  });
-  var myWidth = 0;
-  function getSize(){
-    if( typeof( window.innerWidth ) == 'number' ) {
-      myWidth = window.innerWidth;
-    } else if( document.documentElement && document.documentElement.clientWidth) {
-      myWidth = document.documentElement.clientWidth;
-    };
-  };
-  var m = $('#main'),
-      a = $('#asidepart'),
-      c = $('.closeaside'),
-      o = $('.openaside');
-  c.click(function(){
-    a.addClass('fadeOut').css('display', 'none');
-    o.css('display', 'block').addClass('fadeIn');
-    m.addClass('moveMain');
-  });
-  o.click(function(){
-    o.css('display', 'none').removeClass('beforeFadeIn');
-    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
-    m.removeClass('moveMain');
-  });
-  $(window).scroll(function(){
-    o.css("top",Math.max(80,260-$(this).scrollTop()));
-  });
-  
-  $(window).resize(function(){
-    getSize(); 
-    if (myWidth >= 1024) {
-      $('header nav').removeClass('shownav');
-    }else{
-      m.removeClass('moveMain');
-      a.css('display', 'block').removeClass('fadeOut');
-      o.css('display', 'none');
       
-      $('#toc.toc-aside').css('display', 'none');
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/python/" rel="tag"># python</a>
+          
+            <a href="/tags/momoko/" rel="tag"># momoko</a>
+          
+            <a href="/tags/postgresql/" rel="tag"># postgresql</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2014/09/14/datatable使用/" rel="next" title="记录一下对datatable这个表格插件的使用">
+                <i class="fa fa-chevron-left"></i> 记录一下对datatable这个表格插件的使用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/01/02/database-optimize/" rel="prev" title="mysql数据库优化">
+                mysql数据库优化 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
         
-    }
-  });
-});
-</script>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">kangbiao</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">36</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">10</span>
+                    <span class="site-state-item-name">分类</span>
+                  
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">39</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#size"><span class="nav-number">1.</span> <span class="nav-text">size</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#max-size"><span class="nav-number">2.</span> <span class="nav-text">max_size</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cursor-factory"><span class="nav-number">3.</span> <span class="nav-text">cursor_factory</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#raise-connect-errors"><span class="nav-number">4.</span> <span class="nav-text">raise_connect_errors</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#reconnect-interval"><span class="nav-number">5.</span> <span class="nav-text">reconnect_interval</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#setsession"><span class="nav-number">6.</span> <span class="nav-text">setsession</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#auto-shrink"><span class="nav-number">7.</span> <span class="nav-text">auto_shrink</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#shrink-period"><span class="nav-number">8.</span> <span class="nav-text">shrink_period</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#shrink-delay"><span class="nav-number">9.</span> <span class="nav-text">shrink_delay</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">kangbiao</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.2.2</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Muse</a> v6.4.1</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
 
 <script type="text/javascript">
-$(document).ready(function(){ 
-  var ai = $('.article-content>iframe'),
-      ae = $('.article-content>embed'),
-      t  = $('#toc'),
-      ta = $('#toc.toc-aside'),
-      o  = $('.openaside'),
-      c  = $('.closeaside');
-  if(ai.length>0){
-    ai.wrap('<div class="video-container" />');
-  };
-  if(ae.length>0){
-   ae.wrap('<div class="video-container" />');
-  };
-  c.click(function(){
-    ta.css('display', 'block').addClass('fadeIn');
-  });
-  o.click(function(){
-    ta.css('display', 'none');
-  });
-  $(window).scroll(function(){
-    ta.css("top",Math.max(140,320-$(this).scrollTop()));
-  });
-});
-</script>
-
-
-<script type="text/javascript">
-$(document).ready(function(){ 
-  var $this = $('.share'),
-      url = $this.attr('data-url'),
-      encodedUrl = encodeURIComponent(url),
-      title = $this.attr('data-title'),
-      tsina = $this.attr('data-tsina'),
-      description = $this.attr('description');
-  var html = [
-  '<div class="hoverqrcode clearfix"></div>',
-  '<a class="overlay" id="qrcode"></a>',
-  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
-  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
-  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
-  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
-  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
-  '<span title="Share to"></span>'
-  ].join('');
-  $this.append(html);
-
-  $('.hoverqrcode').hide();
-
-  var myWidth = 0;
-  function updatehoverqrcode(){
-    if( typeof( window.innerWidth ) == 'number' ) {
-      myWidth = window.innerWidth;
-    } else if( document.documentElement && document.documentElement.clientWidth) {
-      myWidth = document.documentElement.clientWidth;
-    };
-    var qrsize = myWidth > 1024 ? 200:100;
-    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
-    var p = $('.article-share-qrcode').position();
-    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
-                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
-                          .qrcode(options);
-  };
-  $(window).resize(function(){
-    $('.hoverqrcode').hide();
-  });
-  $('.article-share-qrcode').click(function(){
-    updatehoverqrcode();
-    $('.hoverqrcode').toggle();
-  });
-  $('.article-share-qrcode').hover(function(){}, function(){
-      $('.hoverqrcode').hide();
-  });
-});   
-</script>
-
-
-
-<script type="text/javascript">
-  var duoshuoQuery = {short_name:"kingber"};
-  (function() {
-    var ds = document.createElement('script');
-    ds.type = 'text/javascript';ds.async = true;
-    ds.src = '//static.duoshuo.com/embed.js';
-    ds.charset = 'UTF-8';
-    (document.getElementsByTagName('head')[0] 
-    || document.getElementsByTagName('body')[0]).appendChild(ds);
-  })();
-</script> 
-
-
-
-
-
-
-
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
-<script src="/fancybox/jquery.fancybox.pack.js"></script>
-<script type="text/javascript">
-$(document).ready(function(){ 
-  $('.article-content').each(function(i){
-    $(this).find('img').each(function(){
-      if ($(this).parent().hasClass('fancybox')) return;
-      var alt = this.alt;
-      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
-      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
-    });
-    $(this).find('.fancybox').each(function(){
-      $(this).attr('rel', 'article' + i);
-    });
-  });
-  if($.fancybox){
-    $('.fancybox').fancybox();
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
   }
-}); 
 </script>
 
 
 
-<!-- Analytics Begin -->
 
 
 
-<script>
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "//hm.baidu.com/hm.js?e6d1f421bbc9962127a50488f9ed37d1";
-  var s = document.getElementsByTagName("script")[0]; 
-  s.parentNode.insertBefore(hm, s);
-})();
-</script>
 
 
 
-<!-- Analytics End -->
-
-<!-- Totop Begin -->
-
-	<div id="totop">
-	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
-	</div>
-	<script src="/js/totop.js"></script>
-
-<!-- Totop End -->
-
-<!-- MathJax Begin -->
-<!-- mathjax config similar to math.stackexchange -->
 
 
-<!-- MathJax End -->
 
-<!-- Tiny_search Begin -->
 
-<!-- Tiny_search End -->
 
-  </body>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
 </html>
