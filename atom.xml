@@ -171,87 +171,6 @@
   </entry>
   
   <entry>
-    <title>WebSocket加RabbitMQ实现web应用实时获取服务器推送</title>
-    <link href="http://kangbiao.org/2016/07/10/websocket-with-rabbitmq/"/>
-    <id>http://kangbiao.org/2016/07/10/websocket-with-rabbitmq/</id>
-    <published>2016-07-10T14:47:44.000Z</published>
-    <updated>2016-07-30T09:30:08.000Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote>
-<p>这篇文章主要记录一下通过实现一个实时获取推送的web应用从而加深对WebSocket的理解，至于为什么用RabbitMQ，只是因为我想顺便熟悉一下这个消息中间件。</p>
-</blockquote>
-<h1 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h1><h2 id="传统Web应用实现长连接的方式"><a href="#传统Web应用实现长连接的方式" class="headerlink" title="传统Web应用实现长连接的方式"></a>传统Web应用实现长连接的方式</h2><p><strong>Comet</strong><br><a href="https://zh.wikipedia.org/wiki/Comet_\\(web%E6%8A%80%E6%9C%AF\\" target="_blank" rel="external">Comet_维基百科</a>#.E9.95.BF.E8.BD.AE.E8.AF.A2)</p>
-<p><strong>Ajax 短轮询</strong><br>Ajax 轮询主要通过页面端的 JS 定时异步刷新任务来实现数据的加载</p>
-<h2 id="WebSocket"><a href="#WebSocket" class="headerlink" title="WebSocket"></a>WebSocket</h2><p>WebSocket 是 HTML5 中一种新的通信协议，能够实现浏览器与服务器之间全双工通信。</p>
-<h2 id="RabbitMQ"><a href="#RabbitMQ" class="headerlink" title="RabbitMQ"></a>RabbitMQ</h2><h1 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h1><blockquote>
-<p>环境准备参考官网即可，一般情况下不会出现问题，出现问题主要是依赖问题，根据提示安装好依赖就行。本文重点在于实现一个实时获取推送的web应用，工具的使用请参考官方文档。</p>
-</blockquote>
-<h2 id="erlang安装"><a href="#erlang安装" class="headerlink" title="erlang安装"></a>erlang安装</h2><blockquote>
-<p>百度<code>erlang</code>按照官网的教程走就行了。</p>
-</blockquote>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">error: Failed dependencies:</div><div class="line">	libGLU.so.1()(64bit) is needed by esl-erlang-19.0-1.x86_64</div><div class="line">	libwx_baseu-2.8.so.0()(64bit) is needed by esl-erlang-19.0-1.x86_64</div><div class="line">	libwx_baseu-2.8.so.0(WXU_2.8)(64bit) is needed by esl-erlang-19.0-1.x86_64</div><div class="line">	libwx_baseu_xml-2.8.so.0()(64bit) is needed by esl-erlang-19.0-1.x86_64</div><div class="line">	libwx_gtk2u_adv-2.8.so.0()(64bit) is needed by esl-erlang-19.0-1.x86_64</div><div class="line">	libwx_gtk2u_adv-2.8.so.0(WXU_2.8)(64bit) is needed by esl-erlang-19.0-1.x86_64</div><div class="line">	libwx_gtk2u_aui-2.8.so.0()(64bit) is needed by esl-erlang-19.0-1.x86_64</div><div class="line">	libwx_gtk2u_aui-2.8.so.0(WXU_2.8)(64bit) is needed by esl-erlang-19.0-1.x86_64</div><div class="line">	libwx_gtk2u_aui-2.8.so.0(WXU_2.8.5)(64bit) is needed by esl-erlang-19.0-1.x86_64</div><div class="line">	libwx_gtk2u_core-2.8.so.0()(64bit) is needed by esl-erlang-19.0-1.x86_64</div><div class="line">	libwx_gtk2u_core-2.8.so.0(WXU_2.8)(64bit) is needed by esl-erlang-19.0-1.x86_64</div><div class="line">	libwx_gtk2u_gl-2.8.so.0()(64bit) is needed by esl-erlang-19.0-1.x86_64</div><div class="line">	libwx_gtk2u_gl-2.8.so.0(WXU_2.8)(64bit) is needed by esl-erlang-19.0-1.x86_64</div><div class="line">	libwx_gtk2u_html-2.8.so.0()(64bit) is needed by esl-erlang-19.0-1.x86_64</div><div class="line">	libwx_gtk2u_html-2.8.so.0(WXU_2.8)(64bit) is needed by esl-erlang-19.0-1.x86_64</div><div class="line">	libwx_gtk2u_stc-2.8.so.0()(64bit) is needed by esl-erlang-19.0-1.x86_64</div><div class="line">	libwx_gtk2u_stc-2.8.so.0(WXU_2.8)(64bit) is needed by esl-erlang-19.0-1.x86_64</div><div class="line">	libwx_gtk2u_xrc-2.8.so.0()(64bit) is needed by esl-erlang-19.0-1.x86_64</div><div class="line">	libwx_gtk2u_xrc-2.8.so.0(WXU_2.8)(64bit) is needed by esl-erlang-19.0-1.x86_64</div><div class="line"></div><div class="line">如果出现上述错误，说明是缺少依赖，执行以下两行命令即可</div><div class="line"><span class="comment"># yum -y install make gcc gcc-c++ kernel-devel m4 ncurses-devel openssl-devel java-devel  unixODBC-devel;</span></div><div class="line"><span class="comment"># yum install unixODBC unixODBC-devel wxBase wxGTK SDL wxGTK-gl</span></div><div class="line"></div><div class="line">最后执行`erl`，如果进入了erlang的交互式shell，则说明安装成功。</div><div class="line"><span class="comment"># erl</span></div></pre></td></tr></table></figure>
-<h2 id="rabbitmq安装"><a href="#rabbitmq安装" class="headerlink" title="rabbitmq安装"></a>rabbitmq安装</h2><blockquote>
-<p>还是按照官网教程走就行了，这里有个坑就是如果erlang是通过rpm包安装的话会出现rabbitmq依赖的erlang版本错误的问题，估计是由于一些环境变量不对，这里我也没有多折腾，较快的解决方案是使用yum安装一次就好了。</p>
-</blockquote>
-<p>安装好rabbitmq后，执行以下命令启用web管理扩展，这样就可以通过web端来查看rabbitmq的运行状态</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># rabbitmq-plugins enable rabbitmq_management rabbitmq_web_stomp rabbitmq_stomp</span></div><div class="line"></div><div class="line">但是由于rabbitmq_management的默认设置，此时只能通过localhost访问rabbitmq的web管理端。</div><div class="line">新建/etc/rabbitmq/rabbitmq.config文件，加入如下配置即可解决</div><div class="line"></div><div class="line">[&#123;rabbit, [&#123;loopback_users, []&#125;]&#125;].</div><div class="line"></div><div class="line">最后重启rabbitmq使更改生效。</div><div class="line"><span class="comment"># service rabbitmq-server restart</span></div><div class="line">然后就可以通过http://ip:15672来访问到rabbitmq的web管理端。</div></pre></td></tr></table></figure>
-<h2 id="java环境配置"><a href="#java环境配置" class="headerlink" title="java环境配置"></a>java环境配置</h2><p>略</p>
-<h1 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h1><p>待更新</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;p&gt;这篇文章主要记录一下通过实现一个实时获取推送的web应用从而加深对WebSocket的理解，至于为什么用RabbitMQ，只是因为我想顺便熟悉一下这个消息中间件。&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;h1 id=&quot;基本概念&quot;&gt;&lt;a href=&quot;#
-    
-    </summary>
-    
-      <category term="CS原理" scheme="http://kangbiao.org/categories/CS%E5%8E%9F%E7%90%86/"/>
-    
-    
-      <category term="WebSocket" scheme="http://kangbiao.org/tags/WebSocket/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>为PHPStorm开发一个在内网通过SSH代理隧道实现一键代码同步功能的插件</title>
-    <link href="http://kangbiao.org/2016/06/20/phpstorm-filesync-plugin/"/>
-    <id>http://kangbiao.org/2016/06/20/phpstorm-filesync-plugin/</id>
-    <published>2016-06-20T14:47:44.000Z</published>
-    <updated>2016-07-30T09:32:36.000Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote>
-<p><strong>写在前面：</strong>开发这个插件的背景是我所在的公司的测试环境的机器是不能够直接在本地通过SSH登陆上去的，需要先SSH登陆到一个跳板机上面，然后再跳板机上面SSH登陆到测试环境的机器上面。另外一个比较坑的地方就是测试环境的机器和代码仓库的网络是不通的，所以测试环境的代码部署是通过sz命令一个一个本地上传（对，压缩包都不能传），另外本地电脑的网络和测试环境完全隔离，测试是通过在测试机器上面发包实现。</p>
-<p>讲道理，这是一种很笨拙的做法，但是由于公司网络限制，又没有办法。然而自从前段时间不小心看见了一片关于Xshell代理隧道实现内网访问的文章，下来仔细想了想，竟然可以通过这个方法来实现本地直接访问测试环境，发测试请求包等等。后来又想到可不可以写一个PHPStorm插件实现在编辑器右键然后可以在弹出菜单里面选择一个同步到测试环境或者从测试环境同步实现一键代码同步。</p>
-</blockquote>
-<p><strong>所以这篇文章主要会记录一下几个知识点：</strong></p>
-<ol>
-<li>三种SSH代理的区别和原理。</li>
-<li>jsch实现跳板机多次ssh登陆的原理。</li>
-<li>基于jetbrains(phpstorm，idea，pycharm等)的IDE的插件开发介绍。</li>
-<li>怎样实现用户可配置插件和怎样在插件中通过jsch实现SSH代理。</li>
-<li>一些其他的坑。</li>
-</ol>
-<p>加班太多，还没写好，待更新。。。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;p&gt;&lt;strong&gt;写在前面：&lt;/strong&gt;开发这个插件的背景是我所在的公司的测试环境的机器是不能够直接在本地通过SSH登陆上去的，需要先SSH登陆到一个跳板机上面，然后再跳板机上面SSH登陆到测试环境的机器上面。另外一个比较坑的地方就是测试环境的
-    
-    </summary>
-    
-      <category term="JAVA" scheme="http://kangbiao.org/categories/JAVA/"/>
-    
-    
-      <category term="idea插件" scheme="http://kangbiao.org/tags/idea%E6%8F%92%E4%BB%B6/"/>
-    
-  </entry>
-  
-  <entry>
     <title>redis高性能SDS字符串实现分析</title>
     <link href="http://kangbiao.org/2016/04/30/redis-sds/"/>
     <id>http://kangbiao.org/2016/04/30/redis-sds/</id>
@@ -1437,6 +1356,76 @@
     
       <category term="接口文档" scheme="http://kangbiao.org/categories/%E6%8E%A5%E5%8F%A3%E6%96%87%E6%A1%A3/"/>
     
+    
+  </entry>
+  
+  <entry>
+    <title>JAVA基础知识复习笔记</title>
+    <link href="http://kangbiao.org/2015/10/22/java-review/"/>
+    <id>http://kangbiao.org/2015/10/22/java-review/</id>
+    <published>2015-10-22T04:47:44.000Z</published>
+    <updated>2016-07-11T12:17:40.000Z</updated>
+    
+    <content type="html"><![CDATA[<ol>
+<li>java程序初始化:静态代码快优先与非静态代码块(优先于构造函数),父类优先于子类进行初始化</li>
+<li>没有声明任何方法的接口为标识接口,用来判断某个类属于特定的类型,用instanceof判断是否是某个接口,类或者抽象类的实现</li>
+<li>JAVA浅复制和深复制:都需要实现Cloneable标识接口.当一个类只包含基本数据类型是,使用浅复制即可复制该对象,但是包含其他对象是,需要在clone方法中对每个属性进行深复制.</li>
+<li>JAVA创建对象的四种方法:new , 反射 , 类的复制 , 反序列化</li>
+<li>JAVA实现回调函数的方法:通过定义一个接口,然后在接口中声明要调用的方法,接着实现该接口,在需要调用的地方把该类接口类型(相当于c++的函数指针)作为参数传进去,实际使用是传入该接口不同的实现类的对象即可.</li>
+<li>JAVA中多态的机制:编译时多态(通过方法的重载实现),运行时多态(通过方法的重写实现)</li>
+<li>native关键字:native关键字说明其修饰的方法是一个原生态方法，方法对应的实现不是在当前文件，而是在用其他语言（如C和C++）实现的文件中。Java语言本身不能对操作系统底层进行访问和操作，但是可以通过JNI接口调用其他语言来实现对底层的访问。</li>
+<li>当子类需要显式的调用父类的构造函数时,super()必须是第一条语句.</li>
+<li>JAVA跳出多层循环:在需要跳出的地方设置一个标识,然后在break(break out;此处out即为标识,类似于goto语句的使用)语句后天添加标识即可.</li>
+<li>final是指引用不可变,但是对于引用的对象可以改变</li>
+<li>Math类中ceil,round,floor的区别</li>
+<li>new String(“abc”)创建了几个对象</li>
+<li>对象默认的equals方法是比较的引用</li>
+<li>StringBuilder的效率高于StringBuffer,但是其不是线程安全的</li>
+<li>try catch中如果有return语句,但是依旧会执行finally里面的语句,但是如果finally里面有return语句的话,会覆盖其他return语句</li>
+<li>异常:异常分为运行时异常和普通异常,分别为Error和Exception类,均继承自Throwable类,运行时异常会导致程序的终止执行,而普通异常用户可以自己处理</li>
+<li>JAVA中的两种IO流,字节流(InputStream和OutputStream)和字符流(Reader和Writer,其他流继承自这两种类从而实现不同的功能</li>
+<li>JAVA集合框架:List,Set,Map,迭代器Iterator,</li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;ol&gt;
+&lt;li&gt;java程序初始化:静态代码快优先与非静态代码块(优先于构造函数),父类优先于子类进行初始化&lt;/li&gt;
+&lt;li&gt;没有声明任何方法的接口为标识接口,用来判断某个类属于特定的类型,用instanceof判断是否是某个接口,类或者抽象类的实现&lt;/li&gt;
+&lt;li&gt;JAV
+    
+    </summary>
+    
+      <category term="JAVA" scheme="http://kangbiao.org/categories/JAVA/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>数据结构和算法复习-链表</title>
+    <link href="http://kangbiao.org/2015/10/21/architecture-review/"/>
+    <id>http://kangbiao.org/2015/10/21/architecture-review/</id>
+    <published>2015-10-21T04:47:44.000Z</published>
+    <updated>2016-04-17T13:46:02.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="单向链表的基本操作"><a href="#单向链表的基本操作" class="headerlink" title="单向链表的基本操作"></a>单向链表的基本操作</h2><blockquote>
+<p>定义:每个节点存储了当前节点的数据信息和下一个节点的地址信息或者引用</p>
+</blockquote>
+<p><strong>JAVA实现</strong>:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//定义节点信息类</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Node</span></span>&#123;</div><div class="line">	Node next=<span class="keyword">null</span>;</div><div class="line">	<span class="keyword">int</span> data;</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="title">Node</span><span class="params">(data)</span></span>&#123;</div><div class="line">		<span class="keyword">this</span>.data=data;</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LinkedList</span></span>&#123;</div><div class="line">	Node head=<span class="keyword">null</span>;</div><div class="line"></div><div class="line">	<span class="comment">//插入一个节点方法一</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addNode</span><span class="params">(<span class="keyword">int</span> data)</span></span>&#123;</div><div class="line">		Node newNode=<span class="keyword">new</span> Node(data);</div><div class="line">		<span class="keyword">if</span> (head==<span class="keyword">null</span>) &#123;</div><div class="line">			head=newNode;</div><div class="line">			<span class="keyword">return</span>;</div><div class="line">		&#125;</div><div class="line">		Node tmp=head;</div><div class="line">		<span class="keyword">while</span>(tmp.next!=<span class="keyword">null</span>)&#123;</div><div class="line">			tmp=tmp.next;</div><div class="line">		&#125;</div><div class="line">		tmp.next=newNode;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="comment">//删除一个节点</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">deleteNode</span><span class="params">(<span class="keyword">int</span> index)</span></span>&#123;</div><div class="line">		<span class="keyword">if</span>(index&lt;<span class="number">1</span>||index&gt;<span class="keyword">this</span>.length())</div><div class="line">			<span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">		<span class="keyword">if</span> (index==<span class="number">1</span>) &#123;</div><div class="line">			head=head.next;</div><div class="line">			<span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">int</span> i=<span class="number">1</span>;</div><div class="line">		Node preNode=head;</div><div class="line">		Node curNode=preNode.next;</div><div class="line">		<span class="keyword">while</span>(curNode!=<span class="keyword">null</span>)&#123;</div><div class="line">			<span class="keyword">if</span> (i==index) &#123;</div><div class="line">				preNode.next=curNode.next;</div><div class="line">				<span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">			&#125;</div><div class="line">			preNode=curNode;</div><div class="line">			curNode=curNode.next;</div><div class="line">			i++;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="comment">//获取链表的长度</span></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">length</span><span class="params">()</span></span>&#123;</div><div class="line">		<span class="keyword">int</span> len=<span class="number">0</span>;</div><div class="line">		Node tmp=head;</div><div class="line">		<span class="keyword">if</span> (tmp.next!=<span class="keyword">null</span>) &#123;</div><div class="line">			len++;</div><div class="line">			tmp=tmp.next;</div><div class="line">		&#125;</div><div class="line">		<span class="keyword">return</span> len;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;单向链表的基本操作&quot;&gt;&lt;a href=&quot;#单向链表的基本操作&quot; class=&quot;headerlink&quot; title=&quot;单向链表的基本操作&quot;&gt;&lt;/a&gt;单向链表的基本操作&lt;/h2&gt;&lt;blockquote&gt;
+&lt;p&gt;定义:每个节点存储了当前节点的数据信息和下一个节点的地址信
+    
+    </summary>
+    
+      <category term="数据结构和算法" scheme="http://kangbiao.org/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/"/>
+    
+    
+      <category term="算法" scheme="http://kangbiao.org/tags/%E7%AE%97%E6%B3%95/"/>
     
   </entry>
   
