@@ -436,7 +436,7 @@
           
 java程序初始化:静态代码快优先与非静态代码块(优先于构造函数),父类优先于子类进行初始化
 没有声明任何方法的接口为标识接口,用来判断某个类属于特定的类型,用instanceof判断是否是某个接口,类或者抽象类的实现
-JAVA浅复制和深复制:都需要实现Cloneable标识接口.当一个类只包含基
+JAVA浅复制和深复制:都需要实现Cloneable标识接口.当一个类只包含基本数据类型是,使用浅复制即可复制该对象,但是包含其他对象是,需要在clone方法中对每个属性进行深复
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -599,7 +599,7 @@ JAVA浅复制和深复制:都需要实现Cloneable标识接口.当一个类只�
           单向链表的基本操作
 定义:每个节点存储了当前节点的数据信息和下一个节点的地址信息或者引用
 
-JAVA实现:1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253
+JAVA实现:123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960//定义节点信息类class Node&#123;	Node next=
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -767,7 +767,9 @@ sudo gedit /etc/profile    修改环境变量配置文件，这里的配置是�
 
 source /etc/profile     使修改生效
 
-如果系统中有多个jdk，输入一
+如果系统中有多个jdk，输入一下命令切换默认的jdk
+
+sudo update-alternatives –install /us
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1092,7 +1094,7 @@ source /etc/profile     使修改生效
 刚开始学习javaee,把自己遇到的主要问题总结一下,做个笔记,也希望给别人带来帮助,spring和hibernate均是&gt;基于当前最新版本的上一个版本.4.3.7和4.3.11  
 
 [toc]
-遇到的问题:配置文件问题在配置hibernate的session工厂的时候,读取不到.hbm.
+遇到的问题:配置文件问题在配置hibernate的session工厂的时候,读取不到.hbm.xml文件的原因大致如下:12这是我的配置&lt;property name="mappingLoc
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1255,7 +1257,12 @@ source /etc/profile     使修改生效
           
 apt-get install vsftpd   安装ftp服务器端vim /etc/vsftpd.conf   编辑ftp服务器的配置
 
- 如果设置了*anonymous_enable=YES*则表示可以匿名登陆12chroot_list_enable=YESchroot_list_file=/
+ 如果设置了*anonymous_enable=YES*则表示可以匿名登陆12chroot_list_enable=YESchroot_list_file=/etc/vsftpd.chroot_list
+
+启用这兩项的话，根目录要设置为不可写
+
+添加用户
+由
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1418,7 +1425,7 @@ apt-get install vsftpd   安装ftp服务器端vim /etc/vsftpd.conf   编辑ftp�
           
 sudo gedit /etc/apache2/apache2.conf  打开apache配置文件
 
-12345Directory /var/www/&gt;  实际目录根据网站根目录而定    Options Indexes FollowSymLinks    AllowOverride No
+12345Directory /var/www/&gt;  实际目录根据网站根目录而定    Options Indexes FollowSymLinks    AllowOverride None  改为All    Require all granted&lt;/Directory&gt;
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1597,7 +1604,10 @@ crontab -l 查看计划任务列表配置文件格式
 
 例子：
 
-每晚21:31重启Apach
+每晚21:31重启Apache服务器
+131 21 * * * service apache2 restart
+
+每月的1,22
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1762,7 +1772,9 @@ crontab -l 查看计划任务列表配置文件格式
 
 安装服务器组件：apt-get install apache2 php5 mysql-server php5-mysql。
 
-运行cat /etc/apache2/m
+运行cat /etc/apache2/mod–enabled/php5.load命令查看Apache和php解析器是否关联。
+
+运行cat 
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1924,7 +1936,7 @@ crontab -l 查看计划任务列表配置文件格式
           
           基本语法：mongodb内置的帮助功能非常实用。需要查看哪一级操作的帮助，直接xxx.help()即可，便会列出所有可用的操作.后面会有英文说明，看说明就知道对应的方法是干什么用的。
 概念：mongodb存储结构：
-db(相当于关系型数据库中的数据库)：共用同一个索引的collections的集合c
+db(相当于关系型数据库中的数据库)：共用同一个索引的collections的集合collection(相当于关系型数据库中的表)：共用一个索引的documents的集合。docume
           ...
           <!--noindex-->
           <div class="post-button text-center">

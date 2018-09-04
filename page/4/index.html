@@ -439,7 +439,10 @@
 安装前的准备
 一台服务器(ubuntu或者centos)
 去gitlab官网下载deb或者rpm包到本地 这是传送门
-按照gitlab官网说明安装好 curl openssh-serv
+按照gitlab官网说明安装好 curl openssh-server ca-certificates postfix依赖组件
+
+开始安装
+将下载好的gitlab安装
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -603,7 +606,11 @@
 
 更新一下origin
 
-git remote remove origingit remote add origin git@github.com:Username/Your_Repo_Name.gitgit branch –set-upstream-to=origi
+git remote remove origingit remote add origin git@github.com:Username/Your_Repo_Name.gitgit branch –set-upstream-to=origin/master master
+
+
+对于HTTPS方式，可以在~/.netrc文件里设定用户名密码
+
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -766,7 +773,7 @@ git remote remove origingit remote add origin git@github.com:Username/Your_Repo_
           
 由于最近要做一个创新项目，需要用到python web开发，于是研究了一下django这个很全能的python web框架。
 
-为什么需要ngix呢？首先说一下为什么需要这三者组合建站，只用django的话，不能做到负载均衡，比如需要请求一些静态资源，就需要django全部去处理，不能将请求合理分
+为什么需要ngix呢？首先说一下为什么需要这三者组合建站，只用django的话，不能做到负载均衡，比如需要请求一些静态资源，就需要django全部去处理，不能将请求合理分发，而ngix正好能解决这样的问题（似乎这个项目也不用怎么考虑负载均衡哈~~但是提高逼格总是必须的）
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -929,7 +936,8 @@ git remote remove origingit remote add origin git@github.com:Username/Your_Repo_
           
 注：数据库基于我的博客数据库设计
 
-对COUNT的优化同时查询分类为PHP和JAVA的文章数的总数：SELECT COUNT (topic=php) AS ‘php文章数’ ,COUNT(topic=java) AS ‘JAVA文章数’ FROM article;注意count函数不会对null值
+对COUNT的优化同时查询分类为PHP和JAVA的文章数的总数：SELECT COUNT (topic=php) AS ‘php文章数’ ,COUNT(topic=java) AS ‘JAVA文章数’ FROM article;注意count函数不会对null值进行计数，所以如果 对null进行计数，就需要加上 or null
+子查询的优化将子查询优化成连接查
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1091,7 +1099,7 @@ git remote remove origingit remote add origin git@github.com:Username/Your_Repo_
           
           size参数:int含义:最小的连接数
 max_size参数:int含义:最大的连接数
-cursor_factory参数:psycopg2.extensions.cursor的子类含义:设置以后可以写一个psycopg2.extensions.cursor的子类,添加日志记录功能或者预先的数据库结果
+cursor_factory参数:psycopg2.extensions.cursor的子类含义:设置以后可以写一个psycopg2.extensions.cursor的子类,添加日志记录功能或者预先的数据库结果处理,格式化execute执行失败后的异常好处:可以很大程度的提高程序的灵活性,可以重新将事务封装在
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1251,7 +1259,7 @@ cursor_factory参数:psycopg2.extensions.cursor的子类含义:设置以后可�
       
         
           
-          配置先上一段代码1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162function initDataTable()&#1
+          配置先上一段代码1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162function initDataTable()&#123;        editTable=$('#tenantListTable').DataTab
           ...
           <!--noindex-->
           <div class="post-button text-center">
