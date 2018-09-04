@@ -14,7 +14,7 @@
   
 
 
-<html class="theme-next muse use-motion" lang="zh-CN">
+<html class="theme-next mist use-motion" lang="zh-CN">
 <head>
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -50,6 +50,10 @@
 
 
 
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
 
 
 
@@ -84,10 +88,10 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Muse',
+    scheme: 'Mist',
     version: '6.4.1',
     sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
-    fancybox: false,
+    fancybox: true,
     fastclick: false,
     lazyload: false,
     tabs: true,
@@ -109,15 +113,15 @@
 
 
   <meta property="og:type" content="website">
-<meta property="og:title" content="kingber">
+<meta property="og:title" content="Brady">
 <meta property="og:url" content="http://kangbiao.org/page/4/index.html">
-<meta property="og:site_name" content="kingber">
+<meta property="og:site_name" content="Brady">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="kingber">
+<meta name="twitter:title" content="Brady">
 
 
 
-  <link rel="alternate" href="/atom.xml" title="kingber" type="application/atom+xml" />
+  <link rel="alternate" href="/atom.xml" title="Brady" type="application/atom+xml" />
 
 
 
@@ -132,7 +136,7 @@
   };
 </script>
 
-  <title>kingber</title>
+  <title>Brady</title>
   
 
 
@@ -191,13 +195,13 @@
     <div class="custom-logo-site-title">
       <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
-        <span class="site-title">kingber</span>
+        <span class="site-title">Brady</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
     
       
-        <p class="site-subtitle">关注简书【@进击的诺基亚】，欢迎前来交流^_^</p>
+        <p class="site-subtitle">Focus</p>
       
     
   </div>
@@ -229,14 +233,6 @@
         
         
           
-          <li class="menu-item menu-item-about">
-    <a href="/about/" rel="section">
-      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于</a>
-  </li>
-        
-        
-        
-          
           <li class="menu-item menu-item-categories">
     <a href="/categories/" rel="section">
       <i class="menu-item-icon fa fa-fw fa-th"></i> <br />分类</a>
@@ -249,8 +245,24 @@
     <a href="/archives/" rel="section">
       <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
   </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于</a>
+  </li>
 
       
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />搜索</a>
+        </li>
       
     </ul>
   
@@ -260,6 +272,29 @@
 
   
 
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
   
 </nav>
 
@@ -298,16 +333,178 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://kangbiao.org/2015/01/20/how-to-gitlab/">
+    <link itemprop="mainEntityOfPage" href="http://kangbiao.org/2015/02/05/mongodb入门笔记/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="kangbiao">
+      <meta itemprop="name" content="Brady">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="kingber">
+      <meta itemprop="name" content="Brady">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2015/02/05/mongodb入门笔记/" itemprop="url">
+                  mongodb入门笔记
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2015-02-05 20:15:55" itemprop="dateCreated datePublished" datetime="2015-02-05T20:15:55+08:00">2015-02-05</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/SQL-NoSQL/" itemprop="url" rel="index"><span itemprop="name">SQL&NoSQL</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          基本语法：mongodb内置的帮助功能非常实用。需要查看哪一级操作的帮助，直接xxx.help()即可，便会列出所有可用的操作.后面会有英文说明，看说明就知道对应的方法是干什么用的。
+概念：mongodb存储结构：
+db(相当于关系型数据库中的数据库)：共用同一个索引的collections的集合c
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2015/02/05/mongodb入门笔记/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://kangbiao.org/2015/01/20/how-to-gitlab/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Brady">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Brady">
     </span>
 
     
@@ -347,22 +544,6 @@
               <time title="创建时间：2015-01-20 20:15:55" itemprop="dateCreated datePublished" datetime="2015-01-20T20:15:55+08:00">2015-01-20</time>
             
 
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2016-04-17 15:43:58" itemprop="dateModified" datetime="2016-04-17T15:43:58+08:00">2016-04-17</time>
-              
             
           </span>
 
@@ -414,60 +595,21 @@
       
         
           
-            <h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><blockquote>
-<p>好久都没有写文章了,最近被一个项目忙得死去活来.今天恰巧没什么事儿,记录一下安装gitlab的全过程.</p>
-</blockquote>
-<h2 id="安装前的准备"><a href="#安装前的准备" class="headerlink" title="安装前的准备"></a>安装前的准备</h2><ol>
-<li>一台服务器(ubuntu或者centos)</li>
-<li>去gitlab官网下载deb或者rpm包到本地 <a href="https://packages.gitlab.com/gitlab/gitlab-ce" target="_blank" rel="external">这是传送门</a></li>
-<li>按照gitlab官网说明安装好 curl openssh-server ca-certificates postfix依赖组件</li>
-</ol>
-<h2 id="开始安装"><a href="#开始安装" class="headerlink" title="开始安装"></a>开始安装</h2><ol>
-<li>将下载好的gitlab安装包上传至服务器(我用的是最新的8.0版本).</li>
-<li>dpkg -i gitlab-ce-XXX.deb 开始安装</li>
-<li>安装好以后执行gitlab-ctl reconfigure初始化配置gitlab</li>
-<li>至此安装结束</li>
-</ol>
-<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><ol>
-<li>如果之前有安装postgresql,需要预先设置gitlab的数据库</li>
-<li>请确定你的服务器的内存大于2个G,否则一定要挂载一个交换分区使得分区之和为2个G以上,这是gitlab能够运行的基本条件.这点非常重要!!</li>
-<li>如何挂载交换分区参见下面</li>
-<li>若有其他问题一定要google,不要百度!</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">mkdir /swap</div><div class="line"><span class="built_in">cd</span> /swap</div><div class="line">sudo dd <span class="keyword">if</span>=/dev/zero of=swapfile bs=1M count=2k 创建交换分区使用的文件</div><div class="line">mkswap swapfile 创建交换分区</div><div class="line">swapon swapfile 挂载交换分区</div><div class="line">自动挂载交换文件</div><div class="line">sudo gedit /etc/fstab 在最后添加“/swap/swapfile     swap    swap      defaults     0  0”</div></pre></td></tr></table></figure>
-<h2 id="个性化设置"><a href="#个性化设置" class="headerlink" title="个性化设置"></a>个性化设置</h2><blockquote>
-<p>作为一名优羞~~的程序员,当然要自己配置一番.个性化配置包括:自定义登陆页,设置邮箱,解决头像显示</p>
-</blockquote>
-<h3 id="自定义登陆页"><a href="#自定义登陆页" class="headerlink" title="自定义登陆页"></a>自定义登陆页</h3><ol>
-<li>找到 /opt/gitlab/embedded/service/gitlab-rails/app/views/layouts/devise.html.haml 编辑即可,不会haml可以谷歌在线搜索一个html转haml的就行.这个很基础,我是把自带的登陆信息删了,然后通过后台管理配置(等会说)来自定义登录页面.</li>
-<li>在admin area里面的setting选项卡里面可以通过markdown的格式自定义登陆页.</li>
-</ol>
-<h3 id="设置邮箱"><a href="#设置邮箱" class="headerlink" title="设置邮箱"></a>设置邮箱</h3><blockquote>
-<p>我设置的是腾讯企业邮</p>
-</blockquote>
-<ol>
-<li>为gitlab服务器分配一个企业邮箱账号(git@kangbiao.org)</li>
-<li>在服务器的/etc/gitlab下找到gitlab.rb编辑邮件设置(这个网上很多,不赘述)</li>
-<li>测试一下</li>
-</ol>
-<h3 id="解决头像显示问题"><a href="#解决头像显示问题" class="headerlink" title="解决头像显示问题"></a>解决头像显示问题</h3><ol>
-<li>在服务器的/etc/gitlab下找到gitlab.rb编辑avatar设置选项,换成duoshuo的服务器即可.</li>
-</ol>
-<h3 id="使以上配置生效"><a href="#使以上配置生效" class="headerlink" title="使以上配置生效"></a>使以上配置生效</h3><blockquote>
-<p>重新执行gitlab-ctl reconfigure即可,注意如果该文件没有变动的话,重新配置不会更新模板文件.</p>
-</blockquote>
-<h3 id="贴一下我的配置文件"><a href="#贴一下我的配置文件" class="headerlink" title="贴一下我的配置文件"></a>贴一下我的配置文件</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">external_url <span class="string">'http://139.129.130.62'</span></div><div class="line"></div><div class="line"><span class="comment">############################</span></div><div class="line"><span class="comment"># gitlab.yml configuration #</span></div><div class="line"><span class="comment">############################</span></div><div class="line">gitlab_rails[<span class="string">'gitlab_email_enabled'</span>] = <span class="literal">true</span></div><div class="line">gitlab_rails[<span class="string">'gitlab_email_from'</span>] = <span class="string">'git@kangbiao.org'</span></div><div class="line">gitlab_rails[<span class="string">'gitlab_email_display_name'</span>] = <span class="string">'git-kangbiao'</span></div><div class="line">gitlab_rails[<span class="string">'gravatar_plain_url'</span>] = <span class="string">'http://gravatar.duoshuo.com/avatar/%&#123;hash&#125;?s=%&#123;size&#125;&amp;d=identicon'</span></div><div class="line">gitlab_rails[<span class="string">'gravatar_ssl_url'</span>] = <span class="string">'https://secure.duoshuo.com/avatar/%&#123;hash&#125;?s=%&#123;size&#125;&amp;d=identicon'</span></div><div class="line"></div><div class="line"><span class="comment">################################</span></div><div class="line"><span class="comment"># GitLab email server settings #</span></div><div class="line"><span class="comment">################################</span></div><div class="line">gitlab_rails[<span class="string">'smtp_enable'</span>] = <span class="literal">true</span></div><div class="line">gitlab_rails[<span class="string">'smtp_address'</span>] = <span class="string">"smtp.exmail.qq.com"</span></div><div class="line">gitlab_rails[<span class="string">'smtp_port'</span>] = 25</div><div class="line">gitlab_rails[<span class="string">'smtp_user_name'</span>] = <span class="string">"git@kangbiao.org"</span></div><div class="line">gitlab_rails[<span class="string">'smtp_password'</span>] = <span class="string">"*******"</span></div><div class="line">gitlab_rails[<span class="string">'smtp_domain'</span>] = <span class="string">"exmail.qq.com"</span></div><div class="line">gitlab_rails[<span class="string">'smtp_authentication'</span>] = <span class="string">"login"</span></div><div class="line">gitlab_rails[<span class="string">'smtp_enable_starttls_auto'</span>] = <span class="literal">true</span></div><div class="line"></div><div class="line"><span class="comment">###############</span></div><div class="line"><span class="comment"># GitLab user #</span></div><div class="line"><span class="comment">###############</span></div><div class="line">user[<span class="string">'git_user_name'</span>] = <span class="string">"git-kangbiao"</span></div><div class="line">user[<span class="string">'git_user_email'</span>] = <span class="string">"git@kangbiao.org"</span></div></pre></td></tr></table></figure>
-<h3 id="开始使用"><a href="#开始使用" class="headerlink" title="开始使用"></a>开始使用</h3><blockquote>
-<p>gitlab支持从其他仓库导入版本库,于是我将github上的项目全部导入了进来</p>
-</blockquote>
-<ol>
-<li>创建成员.</li>
-<li>创建组.添加成员到该组.gitlab中组的权限应用于该组所拥有的所有项目,但是会被项目权限覆盖.使用组的概念可以将一个团队加入该组,然后该团队的项目的命名空间改为该组可以对项目进行很好的管理.</li>
-<li>创建项目,创建项目时需要指明命名空间,如果是选择组的话,则组的权限应用于该项目,如果指明人的话,则该人为项目的拥有者</li>
-</ol>
-<h3 id="一些截图"><a href="#一些截图" class="headerlink" title="一些截图"></a>一些截图</h3><p><img src="http://7xlqn0.com1.z0.glb.clouddn.com/2015-10-27%2015%3A42%3A23屏幕截图.png" alt="项目信息"><br><img src="http://7xlqn0.com1.z0.glb.clouddn.com/2015-10-27%2015%3A43%3A37屏幕截图.png" alt="自定义的登陆页面"><br><img src="http://7xlqn0.com1.z0.glb.clouddn.com/2015-10-27%2015%3A46%3A08屏幕截图.png" alt="管理员监控界面"></p>
+          写在前面
+好久都没有写文章了,最近被一个项目忙得死去活来.今天恰巧没什么事儿,记录一下安装gitlab的全过程.
 
-          
+安装前的准备
+一台服务器(ubuntu或者centos)
+去gitlab官网下载deb或者rpm包到本地 这是传送门
+按照gitlab官网说明安装好 curl openssh-serv
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2015/01/20/how-to-gitlab/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -522,13 +664,13 @@
     <link itemprop="mainEntityOfPage" href="http://kangbiao.org/2015/01/14/设置了ssh key仍需要输入用户名和密码/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="kangbiao">
+      <meta itemprop="name" content="Brady">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="kingber">
+      <meta itemprop="name" content="Brady">
     </span>
 
     
@@ -568,22 +710,6 @@
               <time title="创建时间：2015-01-14 20:15:55" itemprop="dateCreated datePublished" datetime="2015-01-14T20:15:55+08:00">2015-01-14</time>
             
 
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2016-04-02 23:58:36" itemprop="dateModified" datetime="2016-04-02T23:58:36+08:00">2016-04-02</time>
-              
             
           </span>
 
@@ -635,21 +761,19 @@
       
         
           
-            <p>用的是https而不是ssh。</p>
-<ol>
-<li><p>更新一下origin</p>
-<blockquote>
-<p>git remote remove origin<br>git remote add origin git@github.com:Username/Your_Repo_Name.git<br>git branch –set-upstream-to=origin/master master</p>
-</blockquote>
-</li>
-<li><p>对于HTTPS方式，可以在~/.netrc文件里设定用户名密码</p>
-<blockquote>
-<p>machine github.com<br>login Username<br>password Password</p>
-</blockquote>
-</li>
-</ol>
+          用的是https而不是ssh。
 
-          
+更新一下origin
+
+git remote remove origingit remote add origin git@github.com:Username/Your_Repo_Name.gitgit branch –set-upstream-to=origi
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2015/01/14/设置了ssh key仍需要输入用户名和密码/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -704,13 +828,13 @@
     <link itemprop="mainEntityOfPage" href="http://kangbiao.org/2015/01/07/ngix uwsgi django组合建站/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="kangbiao">
+      <meta itemprop="name" content="Brady">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="kingber">
+      <meta itemprop="name" content="Brady">
     </span>
 
     
@@ -750,22 +874,6 @@
               <time title="创建时间：2015-01-07 20:15:55" itemprop="dateCreated datePublished" datetime="2015-01-07T20:15:55+08:00">2015-01-07</time>
             
 
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2016-04-10 21:27:22" itemprop="dateModified" datetime="2016-04-10T21:27:22+08:00">2016-04-10</time>
-              
             
           </span>
 
@@ -817,47 +925,18 @@
       
         
           
-            <blockquote>
-<p>由于最近要做一个创新项目，需要用到python web开发，于是研究了一下django这个很全能的python web框架。</p>
-</blockquote>
-<h2 id="为什么需要ngix呢？"><a href="#为什么需要ngix呢？" class="headerlink" title="为什么需要ngix呢？"></a>为什么需要ngix呢？</h2><p>首先说一下为什么需要这三者组合建站，只用django的话，不能做到负载均衡，比如需要请求一些静态资源，就需要django全部去处理，不能将请求合理分发，而ngix正好能解决这样的问题（似乎这个项目也不用怎么考虑负载均衡哈~~但是提高逼格总是必须的），ngix通过配置可以将一些动态请求发给django处理，而对于静请求则自己处理，另外如果网站上还要运行php页面，那么ngix绝对是一个很好的选择，将对php的请求分发给apache处理，ngix和apache通过socket端口通信，然后返回给客户端处理后的结果。</p>
-<h2 id="然后为什么又需要uwsgi呢？"><a href="#然后为什么又需要uwsgi呢？" class="headerlink" title="然后为什么又需要uwsgi呢？"></a>然后为什么又需要uwsgi呢？</h2><p>WSGI是一种Web服务器网关接口。它是一个Web服务器（如nginx）与应用服务器（如uWSGI服务器）通信的一种规范。然后uwsgi是实现了uwsgi和WSGI两种协议的Web服务器。简单点说就是运用uwsgi我们可以实现由uwsgi启动django，然后ngix通过端口与uwsgi通信，在这个过程中，gjango实现了wsgi服务器的功能，ngix实现了wsgi客户端的功能，只不过在web里面，ngix扮演的又是服务器（计算机中的软件通信有很多都是客户端服务器模式。如文件资源就是一个服务，然后应用程序实现了了相应的协议从而去调用这个服务）。这样就实现了uwsgi在ngix和django的中转。</p>
-<h2 id="为什么不让ngix直接与django通信呢？"><a href="#为什么不让ngix直接与django通信呢？" class="headerlink" title="为什么不让ngix直接与django通信呢？"></a>为什么不让ngix直接与django通信呢？</h2><p>uWSGI，既不用wsgi协议也不用fcgi协议，而是自创了一个uwsgi的协议，据说该协议大约是fcgi协议的10倍那么快。<br>uWSGI的主要特点如下：</p>
-<ol>
-<li>超快的性能。</li>
-<li>低内存占用（实测为apache2的mod_wsgi的一半左右）。</li>
-<li>多app管理。</li>
-<li>详尽的日志功能（可以用来分析app性能和瓶颈）。</li>
-<li>高度可定制（内存大小限制，服务一定次数后重启等）。</li>
-</ol>
-<p>这三者之间的原理如下，</p>
-<blockquote>
-<p>the web client &lt;-&gt; the web server(nginx) &lt;-&gt; the socket &lt;-&gt; uwsgi &lt;-&gt; Django</p>
-</blockquote>
-<h2 id="开始部署"><a href="#开始部署" class="headerlink" title="开始部署"></a>开始部署</h2><h3 id="安装ngix-sudo-apt-get-install-ngix"><a href="#安装ngix-sudo-apt-get-install-ngix" class="headerlink" title="安装ngix   sudo apt-get install ngix"></a>安装ngix   sudo apt-get install ngix</h3><p>由于我的机器上面还有apache，我需要修改ngix的监听端口为8080<br>修改如下<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">server &#123;</div><div class="line">	listen 8080 default_server;</div><div class="line">	listen [::]:8080 default_server ipv6only=on;</div><div class="line"></div><div class="line">	root /var/ngix;  #将根目录改为/var/ngix</div><div class="line">	index index.html index.htm;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h3 id="安装django"><a href="#安装django" class="headerlink" title="安装django"></a>安装django</h3><p>用python自带的包管理器easy_install安装 easy_install django会自动安装最新版本</p>
-<h3 id="安装uwsgi"><a href="#安装uwsgi" class="headerlink" title="安装uwsgi"></a>安装uwsgi</h3><blockquote>
-<p>apt-get install python-dev #不安装这个，下面的安装可能会失败<br>pip install uwsgi</p>
-</blockquote>
-<p>如果是apt-get安装就需要    </p>
-<blockquote>
-<p>sudo apt-get install uwsgi-plugin-python</p>
-</blockquote>
-<p>工具安装好以后就可以开始配置项目了，我用的开发环境是pycharm，可以自动生成django项目，如果不是需要运行django的admin.py生成相应的项目文件下面是我的项目的结构<br>.<br>└── myproject<br>    ├── app<br>    │   ├── admin.py<br>    │   ├── <strong>init</strong>.py<br>    │   ├── migrations<br>    │   │   └── <strong>init</strong>.py<br>    │   ├── models.py<br>    │   ├── tests.py<br>    │   └── views.py<br>    ├── db.sqlite3<br>    ├── manage.py<br>    ├── myproject<br>    │   ├── django.xml<br>    │   ├── <strong>init</strong>.py<br>    │   ├── <strong>init</strong>.pyc<br>    │   ├── settings.py<br>    │   ├── settings.pyc<br>    │   ├── urls.py<br>    │   ├── urls.pyc<br>    │   ├── wsgi.py<br>    │   └── wsgi.pyc<br>    ├── templates</p>
-<p>django.xml文件内容为：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">uwsgi</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">socket</span>&gt;</span>127.0.0.1:8630<span class="tag">&lt;/<span class="name">socket</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">chdir</span>&gt;</span>/var/ngix/myproject/myproject<span class="tag">&lt;/<span class="name">chdir</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">pythonpath</span>&gt;</span>..<span class="tag">&lt;/<span class="name">pythonpath</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">module</span>&gt;</span>wsgi<span class="tag">&lt;/<span class="name">module</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">uwsgi</span>&gt;</span></div></pre></td></tr></table></figure></p>
-<p>这里需要注意的是wsgi模块，网上很多都是错误的，直接用自动生成的就行。<br>用socket和ngix进行通信，端口号为本机的8630端口<br>然后需要在ngix的配置文件中添加<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">location / &#123;</div><div class="line">		include uwsgi_params;</div><div class="line">		uwsgi_pass 127.0.0.1:8630;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>uwsgi是ngix自带的模块<br>重启ngix服务，然后启动uwsgi服务</p>
-<blockquote>
-<p>$ uwsgi -x django.xml –plugin python</p>
-</blockquote>
-<p>需要在django.xml所在目录执行</p>
-<p>最后在浏览器输入127.0.0.1：8080就可以看见django的调试页面了~~</p>
-<p>总结一下学到的其他东西：删除/etc/dpkg/info/下面对应的安装文件，可以解决apt子进程启动出错的问题。删了以后需要autoremove一下</p>
-<blockquote>
-<p>资料分享：wsgi概念  uwsgi概念   基于nginx和uWSGI在Ubuntu上部署Django<br>如何把uwsgi交给supervisor管理    unavailable-modifier-requested-0解决办法<br>uwsgi手册   uwsgi部署django常见问题汇总  django中文教程 还是建议去看英文教程，完整点<br>如上便是我参考的资料</p>
-</blockquote>
-
           
+由于最近要做一个创新项目，需要用到python web开发，于是研究了一下django这个很全能的python web框架。
+
+为什么需要ngix呢？首先说一下为什么需要这三者组合建站，只用django的话，不能做到负载均衡，比如需要请求一些静态资源，就需要django全部去处理，不能将请求合理分
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2015/01/07/ngix uwsgi django组合建站/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -912,13 +991,13 @@
     <link itemprop="mainEntityOfPage" href="http://kangbiao.org/2015/01/02/database-optimize/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="kangbiao">
+      <meta itemprop="name" content="Brady">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="kingber">
+      <meta itemprop="name" content="Brady">
     </span>
 
     
@@ -958,22 +1037,6 @@
               <time title="创建时间：2015-01-02 12:47:44" itemprop="dateCreated datePublished" datetime="2015-01-02T12:47:44+08:00">2015-01-02</time>
             
 
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2016-04-03 00:02:38" itemprop="dateModified" datetime="2016-04-03T00:02:38+08:00">2016-04-03</time>
-              
             
           </span>
 
@@ -1025,212 +1088,18 @@
       
         
           
-            <blockquote>
-<p>注：数据库基于我的博客数据库设计</p>
-</blockquote>
-<h3 id="对COUNT的优化"><a href="#对COUNT的优化" class="headerlink" title="对COUNT的优化"></a>对COUNT的优化</h3><p>同时查询分类为PHP和JAVA的文章数的总数：<br>SELECT COUNT (topic=php) AS ‘php文章数’ ,COUNT(topic=java) AS ‘JAVA文章数’ FROM article;<br>注意count函数不会对null值进行计数，所以如果 对null进行计数，就需要加上 or null</p>
-<h3 id="子查询的优化"><a href="#子查询的优化" class="headerlink" title="子查询的优化"></a>子查询的优化</h3><p>将子查询优化成连接查询，但优化以后可能存在一对多的关系，如果不需要一对多，就需要distinct去除重复<br>SELECT <em> FROM TABLE1 WHERE id IN (SELECT id FROM TABLE2 WHERE id=1)<br>SELECT </em> FROM TABLE1 JOIN TABLE2 ON TABLE1.id=TABLE2.id<br>子查询相当于是做多次判断，把所有满足ON 后面条件的结果都返回</p>
-<h3 id="GROUP-BY-的优化"><a href="#GROUP-BY-的优化" class="headerlink" title="GROUP BY 的优化"></a>GROUP BY 的优化</h3><p>两张表关联查询需要做GROUP BY统计，就先在一张表里面做GROUP BY统计后在使用连接的方式进行查询</p>
-<h3 id="limit查询的优化"><a href="#limit查询的优化" class="headerlink" title="limit查询的优化"></a>limit查询的优化</h3><p>由于LIMIT子句一般是配合ORDER BY 使用，所以如果有order by 就使用主键进行排序，然后使用limit的时候记录上一次扫描的地方，不过此方法局限性很大，不合适用于主键不连续的地方</p>
-<h3 id="数据库结构的优化"><a href="#数据库结构的优化" class="headerlink" title="数据库结构的优化"></a>数据库结构的优化</h3><ol>
-<li>使用可以存在数据的最小数据类型</li>
-<li>使用简单的数据类型，int比varchar类型在mysql的处理上更加简单</li>
-<li>尽量少用text类型，非用不可时考虑分表</li>
-</ol>
-
           
-        
-      
-    </div>
+注：数据库基于我的博客数据库设计
 
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://kangbiao.org/2014/09/14/datatable使用/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="kangbiao">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="kingber">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2014/09/14/datatable使用/" itemprop="url">
-                  记录一下对datatable这个表格插件的使用
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2014-09-14 20:15:55" itemprop="dateCreated datePublished" datetime="2014-09-14T20:15:55+08:00">2014-09-14</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2016-04-03 00:02:38" itemprop="dateModified" datetime="2016-04-03T00:02:38+08:00">2016-04-03</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/web前端/" itemprop="url" rel="index"><span itemprop="name">web前端</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p><strong>先上一段代码</strong><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">initDataTable</span>(<span class="params"></span>)</span>&#123;</div><div class="line">        editTable=$(<span class="string">'#tenantListTable'</span>).DataTable(&#123;</div><div class="line">            <span class="string">"processing"</span>:<span class="literal">true</span>,</div><div class="line">            <span class="string">"serverSide"</span>: <span class="literal">true</span>,</div><div class="line">            <span class="string">"ajax"</span>:&#123;</div><div class="line">                <span class="string">"url"</span>: urlConfig.tenantList,</div><div class="line">                <span class="string">"dataSrc"</span>: <span class="string">"jsonString"</span></div><div class="line">            &#125;,</div><div class="line">            <span class="string">"columnDefs"</span>: [&#123;</div><div class="line">                <span class="string">"targets"</span>: <span class="number">0</span>,</div><div class="line">                <span class="string">"data"</span>: <span class="string">"tenantId"</span>,</div><div class="line">                <span class="string">"visible"</span>: <span class="literal">false</span>,</div><div class="line">                <span class="string">"orderable"</span>: <span class="literal">false</span>,</div><div class="line">                <span class="string">"searchable"</span>: <span class="literal">false</span></div><div class="line"></div><div class="line">            &#125;,&#123;</div><div class="line">                <span class="string">"targets"</span>: <span class="number">1</span>,</div><div class="line">                <span class="string">"data"</span>: <span class="literal">null</span>,</div><div class="line">                <span class="string">"orderable"</span>: <span class="literal">false</span>,</div><div class="line">                <span class="string">"searchable"</span>: <span class="literal">false</span>,</div><div class="line">                <span class="string">"defaultContent"</span>:</div><div class="line">                        <span class="string">"&lt;button id='detailRow' class='btn btn-primary' type='button'&gt;查看&lt;/button&gt;"</span></div><div class="line">            &#125;,&#123;</div><div class="line">                <span class="string">"targets"</span>: <span class="number">2</span>,<span class="comment">//删除</span></div><div class="line">                <span class="string">"data"</span>: <span class="literal">null</span>,</div><div class="line">                <span class="string">"orderable"</span>: <span class="literal">false</span>,</div><div class="line">                <span class="string">"searchable"</span>: <span class="literal">false</span>,</div><div class="line">                <span class="string">"defaultContent"</span>:</div><div class="line">                <span class="string">"&lt;button id='editRow' class='btn btn-primary' type='button'&gt;编辑&lt;/button&gt;&amp;ensp;"</span> +</div><div class="line">                <span class="string">"&lt;button id='delRow' class='btn btn-primary' type='button'&gt;删除&lt;/button&gt;"</span></div><div class="line">            &#125;</div><div class="line">            ],</div><div class="line">            <span class="string">"aaSorting"</span>: [[ <span class="number">1</span>, <span class="string">"asc"</span> ]],</div><div class="line">            <span class="string">"autoWidth"</span>:<span class="literal">false</span>,</div><div class="line">            <span class="string">"sDom"</span>:</div><div class="line">                    <span class="string">"&lt;'box-content'&lt;'col-sm-6'f&gt;&lt;'col-sm-6 text-right'l&gt;&lt;'clearfix'&gt;&gt;rt&lt;'box-content'&lt;'col-sm-6'i&gt;&lt;'col-sm-6 text-right'p&gt;&lt;'clearfix'&gt;&gt;"</span>,</div><div class="line">            <span class="string">"language"</span>: &#123;</div><div class="line">                <span class="string">"emptyTable"</span>:     <span class="string">"没有相关数据"</span>,</div><div class="line">                <span class="string">"info"</span>: <span class="string">"显示 _START_ 到 _END_ 条, 共 _TOTAL_ 条记录"</span>,</div><div class="line">                <span class="string">"infoEmpty"</span>:      <span class="string">"没有相关数据"</span>,</div><div class="line">                <span class="string">"infoFiltered"</span>:   <span class="string">"(筛选自 _MAX_ 条记录)"</span>,</div><div class="line">                <span class="string">"infoPostFix"</span>:    <span class="string">""</span>,</div><div class="line">                <span class="string">"thousands"</span>:      <span class="string">","</span>,</div><div class="line">                <span class="string">"lengthMenu"</span>:     <span class="string">"每页显示 _MENU_ 条"</span>,</div><div class="line">                <span class="string">"loadingRecords"</span>: <span class="string">"加载中"</span>,</div><div class="line">                <span class="string">"processing"</span>:     <span class="string">"数据处理中"</span>,</div><div class="line">                <span class="string">"search"</span>:         <span class="string">"搜索:"</span>,</div><div class="line">                <span class="string">"zeroRecords"</span>:    <span class="string">"没有找到匹配数据"</span>,</div><div class="line">                <span class="string">"paginate"</span>: &#123;</div><div class="line">                    <span class="string">"first"</span>:      <span class="string">"首页"</span>,</div><div class="line">                    <span class="string">"last"</span>:       <span class="string">"末页"</span>,</div><div class="line">                    <span class="string">"next"</span>:       <span class="string">"下一页"</span>,</div><div class="line">                    <span class="string">"previous"</span>:   <span class="string">"上一页"</span></div><div class="line">                &#125;,</div><div class="line">                <span class="string">"aria"</span>: &#123;</div><div class="line">                    <span class="string">"sortAscending"</span>:  <span class="string">":正序"</span>,</div><div class="line">                    <span class="string">"sortDescending"</span>: <span class="string">":倒序"</span></div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line"></div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
-<blockquote>
-<p>这段代码已经可以很好的理解在使用datatable时的基础配置了.dataSrc可以指定datatable从哪里去解析数据.</p>
-</blockquote>
-<h3 id="特别配置"><a href="#特别配置" class="headerlink" title="特别配置"></a>特别配置</h3><p>对于sDom的配置:ftrip分别代表的含义是:搜索框,表格部分,进度条,数据信息和分页块,可以说是sDom这个属性可以决定整个datatable的样式.</p>
-<p>接下来比较实用的就是render这个配置:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">$(<span class="built_in">document</span>).ready(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    $(<span class="string">'#example'</span>).DataTable( &#123;</div><div class="line">        <span class="string">"columnDefs"</span>: [</div><div class="line">            &#123;</div><div class="line">                <span class="string">"render"</span>: <span class="function"><span class="keyword">function</span> (<span class="params"> data, type, row </span>) </span>&#123;</div><div class="line">                    <span class="keyword">return</span> data +<span class="string">' ('</span>+ row[<span class="number">3</span>]+<span class="string">')'</span>;</div><div class="line">                &#125;,</div><div class="line">                <span class="string">"targets"</span>: <span class="number">0</span></div><div class="line">            &#125;,</div><div class="line">            &#123; <span class="string">"visible"</span>: <span class="literal">false</span>,  <span class="string">"targets"</span>: [ <span class="number">3</span> ] &#125;</div><div class="line">        ]</div><div class="line">    &#125; );</div><div class="line">&#125; );</div></pre></td></tr></table></figure></p>
-<blockquote>
-<p>render可以对数据进行预处理渲染,比如说时间戳数据可以格式化为不同格式的时间或者将一些代码转换为明文.</p>
-</blockquote>
-<h2 id="插件"><a href="#插件" class="headerlink" title="插件"></a>插件</h2><h3 id="TableTools"><a href="#TableTools" class="headerlink" title="TableTools"></a>TableTools</h3><blockquote>
-<p>可以给datatable添加按钮,例如通过flash将当前的表格数据导成excel或者pdf之类的</p>
-</blockquote>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="string">"oTableTools"</span>: &#123;</div><div class="line">                <span class="string">"sSwfPath"</span>: <span class="string">"plugins/datatables/copy_csv_xls_pdf.swf"</span>,</div><div class="line">                <span class="string">"aButtons"</span>: [</div><div class="line">                    &#123;</div><div class="line">                        <span class="string">"sExtends"</span>:    <span class="string">"collection"</span>,</div><div class="line">                        <span class="string">"sButtonText"</span>: <span class="string">'保存 &lt;span class="caret" /&gt;'</span>,</div><div class="line">                        <span class="string">"aButtons"</span>:    [ <span class="string">"csv"</span>, <span class="string">"xls"</span> ]</div><div class="line">                    &#125;</div><div class="line">                ]</div><div class="line">            &#125;</div></pre></td></tr></table></figure>
-<h3 id="bootstrap"><a href="#bootstrap" class="headerlink" title="bootstrap"></a>bootstrap</h3><blockquote>
-<p>将datatable转换为bootstrap的样式<br>直接引入dataTables.bootstrap.js就行,下面是我写的一个例子</p>
-</blockquote>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">LoadDatatables</span>(<span class="params"></span>)</span>&#123;</div><div class="line">		$.getScript(<span class="string">'plugins/datatables/jquery.dataTables.js'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">			$.getScript(<span class="string">'plugins/datatables/ZeroClipboard.js'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">				$.getScript(<span class="string">'plugins/datatables/TableTools.js'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">					$.getScript(<span class="string">'plugins/datatables/dataTables.bootstrap.js'</span>, callback);</div><div class="line">				&#125;);</div><div class="line">			&#125;);</div><div class="line">		&#125;);</div><div class="line">	&#125;</div></pre></td></tr></table></figure>
-<h3 id="editor"><a href="#editor" class="headerlink" title="editor"></a>editor</h3><blockquote>
-<p>这个插件功能非常强大,但是需要收费,我只试用了一下,几乎可以完成所有对表格的操作,可以用户体验很好.哪位大神有源码求发邮箱.</p>
-</blockquote>
-<h2 id="官网"><a href="#官网" class="headerlink" title="官网"></a>官网</h2><blockquote>
-<p><a href="http://www.datatables.net/" target="_blank" rel="external">datatable</a></p>
-</blockquote>
-
-          
+对COUNT的优化同时查询分类为PHP和JAVA的文章数的总数：SELECT COUNT (topic=php) AS ‘php文章数’ ,COUNT(topic=java) AS ‘JAVA文章数’ FROM article;注意count函数不会对null值
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2015/01/02/database-optimize/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1285,13 +1154,13 @@
     <link itemprop="mainEntityOfPage" href="http://kangbiao.org/2014/09/14/momoko/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="kangbiao">
+      <meta itemprop="name" content="Brady">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="kingber">
+      <meta itemprop="name" content="Brady">
     </span>
 
     
@@ -1331,22 +1200,6 @@
               <time title="创建时间：2014-09-14 20:15:55" itemprop="dateCreated datePublished" datetime="2014-09-14T20:15:55+08:00">2014-09-14</time>
             
 
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2016-02-19 21:11:34" itemprop="dateModified" datetime="2016-02-19T21:11:34+08:00">2016-02-19</time>
-              
             
           </span>
 
@@ -1398,18 +1251,177 @@
       
         
           
-            <h2 id="size"><a href="#size" class="headerlink" title="size"></a>size</h2><p><strong>参数:</strong>int<br><strong>含义:</strong>最小的连接数</p>
-<h2 id="max-size"><a href="#max-size" class="headerlink" title="max_size"></a>max_size</h2><p><strong>参数:</strong>int<br><strong>含义:</strong>最大的连接数</p>
-<h2 id="cursor-factory"><a href="#cursor-factory" class="headerlink" title="cursor_factory"></a>cursor_factory</h2><p><strong>参数:</strong>psycopg2.extensions.cursor的子类<br><strong>含义:</strong>设置以后可以写一个psycopg2.extensions.cursor的子类,添加日志记录功能或者预先的数据库结果处理,格式化execute执行失败后的异常<br><strong>好处:</strong>可以很大程度的提高程序的灵活性,可以重新将事务封装在这个子类里面,而不用在每个执行SQL语句的地方都要写事务.<br>但是这样做只能保证单条语句或者没有关联的多条语句的事务提交和回滚,对于多个插入语句,并且这条语句需要上条语句的返回结果时,实现不是很灵活.</p>
-<p><strong>例子:</strong><br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> psycopg2</div><div class="line"><span class="keyword">import</span> psycopg2.extensions</div><div class="line"><span class="keyword">import</span> logging</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">LoggingCursor</span><span class="params">(psycopg2.extensions.cursor)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">execute</span><span class="params">(self, dict)</span>:</span></div><div class="line">        logger = logging.getLogger(<span class="string">'sql_debug'</span>)</div><div class="line">        logger.info(self.mogrify(sql, args))</div><div class="line"></div><div class="line">        <span class="keyword">try</span>:</div><div class="line">        	psycopg2.extensions.cursor.execute(self, <span class="string">"BEGIN"</span>)</div><div class="line">            <span class="keyword">for</span> sql <span class="keyword">in</span> dict.keys():</div><div class="line">            	psycopg2.extensions.cursor.execute(self, sql, dict[sql])</div><div class="line">            psycopg2.extensions.cursor.execute(self, <span class="string">"COMMIT"</span>)</div><div class="line">        <span class="keyword">except</span> Exception, exc:</div><div class="line">        	psycopg2.extensions.cursor.execute(self, <span class="string">"ROLLBACK"</span>)</div><div class="line">            logger.error(<span class="string">"%s: %s"</span> % (exc.__class__.__name__, exc))</div><div class="line">            <span class="keyword">raise</span></div><div class="line"></div><div class="line">conn = psycopg2.connect(DSN)</div><div class="line">cur = conn.cursor(cursor_factory=LoggingCursor)</div><div class="line">sql_args=&#123;</div><div class="line">	<span class="string">"INSERT INTO mytable VALUES (%s, %s, %s)"</span>:(<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>),</div><div class="line">    <span class="string">"INSERT INTO mytable VALUES (%s, %s, %s)"</span>:(<span class="number">11</span>,<span class="number">12</span>,<span class="number">13</span>)</div><div class="line">&#125;</div><div class="line"><span class="comment"># 可以自动完成事务</span></div><div class="line">cur.execute(sql_args)</div><div class="line"></div><div class="line">这样就能够在执行的时候打印出sql语句和自定义异常</div></pre></td></tr></table></figure></p>
-<h2 id="raise-connect-errors"><a href="#raise-connect-errors" class="headerlink" title="raise_connect_errors"></a>raise_connect_errors</h2><p><strong>参数</strong>:bool<br><strong>含义</strong>:当初始化数据库连接失败后是否抛出连接异常,异常类为 <em>class momoko.PartiallyConnectedError</em></p>
-<h2 id="reconnect-interval"><a href="#reconnect-interval" class="headerlink" title="reconnect_interval"></a>reconnect_interval</h2><p><strong>参数:</strong> int<br><strong>含义:</strong>当数据库连接失败的时候,设置每多少毫秒重新尝试连接.</p>
-<h2 id="setsession"><a href="#setsession" class="headerlink" title="setsession"></a>setsession</h2><p><strong>参数:</strong>list<br><strong>含义:</strong>在一个事务中同时执行一个列表中的所有SQL语句,如果某条SQL语句执行失败了,就关闭执行这写SQL语句的会话,并且回滚事务.</p>
-<h2 id="auto-shrink"><a href="#auto-shrink" class="headerlink" title="auto_shrink"></a>auto_shrink</h2><p><strong>参数:</strong>bool<br><strong>含义:</strong>当指定了数据库连接池的max-size后,会自动回收超过最小连接数的连接.当连接数达到最大时才会触发该函数执行连接回收.</p>
-<h2 id="shrink-period"><a href="#shrink-period" class="headerlink" title="shrink_period"></a>shrink_period</h2><p><strong>参数:</strong>datetime.timedelta()<br><strong>含义:</strong>设置多久执行一次连接回收,前提是设置了auto_shrink为true.</p>
-<h2 id="shrink-delay"><a href="#shrink-delay" class="headerlink" title="shrink_delay"></a>shrink_delay</h2><p><strong>参数:</strong>datetime.timedelta()<br><strong>含义:</strong>设置多久(时,分,秒)没有用的连接被回收.前提是设置了auto_shrink为true.但是如果回收了连接后的连接数小于最小连接,就不会被回收.</p>
+          size参数:int含义:最小的连接数
+max_size参数:int含义:最大的连接数
+cursor_factory参数:psycopg2.extensions.cursor的子类含义:设置以后可以写一个psycopg2.extensions.cursor的子类,添加日志记录功能或者预先的数据库结果
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2014/09/14/momoko/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://kangbiao.org/2014/09/14/datatable使用/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Brady">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Brady">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2014/09/14/datatable使用/" itemprop="url">
+                  记录一下对datatable这个表格插件的使用
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2014-09-14 20:15:55" itemprop="dateCreated datePublished" datetime="2014-09-14T20:15:55+08:00">2014-09-14</time>
+            
+
+            
+          </span>
 
           
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/web前端/" itemprop="url" rel="index"><span itemprop="name">web前端</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          配置先上一段代码1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162function initDataTable()&#1
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2014/09/14/datatable使用/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1482,7 +1494,7 @@
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
-              <p class="site-author-name" itemprop="name">kangbiao</p>
+              <p class="site-author-name" itemprop="name">Brady</p>
               <p class="site-description motion-element" itemprop="description"></p>
           </div>
 
@@ -1493,7 +1505,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">36</span>
+                    <span class="site-state-item-count">37</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -1503,7 +1515,7 @@
                 
                 
                 <div class="site-state-item site-state-categories">
-                  
+                  <a href="/categories/index.html">
                     
                     
                       
@@ -1528,7 +1540,7 @@
                     
                     <span class="site-state-item-count">10</span>
                     <span class="site-state-item-name">分类</span>
-                  
+                  </a>
                 </div>
               
 
@@ -1536,7 +1548,7 @@
                 
                 
                 <div class="site-state-item site-state-tags">
-                  
+                  <a href="/tags/index.html">
                     
                     
                       
@@ -1619,7 +1631,7 @@
                     
                     <span class="site-state-item-count">39</span>
                     <span class="site-state-item-name">标签</span>
-                  
+                  </a>
                 </div>
               
             </nav>
@@ -1668,7 +1680,7 @@
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">kangbiao</span>
+  <span class="author" itemprop="copyrightHolder">Brady</span>
 
   
 
@@ -1686,7 +1698,7 @@
 
 
 
-  <div class="theme-info">主题 – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Muse</a> v6.4.1</div>
+  <div class="theme-info">主题 – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Mist</a> v6.4.1</div>
 
 
 
@@ -1737,6 +1749,8 @@
 
 
 
+  
+
 
 
 
@@ -1766,6 +1780,11 @@
     <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
   
 
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
 
   
 
@@ -1790,7 +1809,7 @@
 
   
 
-
+  
 
   
 
@@ -1803,7 +1822,329 @@
 
 
 
+
+
   
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
 
 
 
