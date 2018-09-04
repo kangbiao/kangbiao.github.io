@@ -229,6 +229,22 @@
         
         
           
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br />分类</a>
+  </li>
+        
+        
+        
+          
           <li class="menu-item menu-item-archives">
     <a href="/archives/" rel="section">
       <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
@@ -1074,185 +1090,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://kangbiao.org/2014/09/14/momoko/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="kangbiao">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="kingber">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2014/09/14/momoko/" itemprop="url">
-                  python使用postgresql-momoko配置
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2014-09-14 20:15:55" itemprop="dateCreated datePublished" datetime="2014-09-14T20:15:55+08:00">2014-09-14</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2016-02-19 21:11:34" itemprop="dateModified" datetime="2016-02-19T21:11:34+08:00">2016-02-19</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/PYTHON/" itemprop="url" rel="index"><span itemprop="name">PYTHON</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="size"><a href="#size" class="headerlink" title="size"></a>size</h2><p><strong>参数:</strong>int<br><strong>含义:</strong>最小的连接数</p>
-<h2 id="max-size"><a href="#max-size" class="headerlink" title="max_size"></a>max_size</h2><p><strong>参数:</strong>int<br><strong>含义:</strong>最大的连接数</p>
-<h2 id="cursor-factory"><a href="#cursor-factory" class="headerlink" title="cursor_factory"></a>cursor_factory</h2><p><strong>参数:</strong>psycopg2.extensions.cursor的子类<br><strong>含义:</strong>设置以后可以写一个psycopg2.extensions.cursor的子类,添加日志记录功能或者预先的数据库结果处理,格式化execute执行失败后的异常<br><strong>好处:</strong>可以很大程度的提高程序的灵活性,可以重新将事务封装在这个子类里面,而不用在每个执行SQL语句的地方都要写事务.<br>但是这样做只能保证单条语句或者没有关联的多条语句的事务提交和回滚,对于多个插入语句,并且这条语句需要上条语句的返回结果时,实现不是很灵活.</p>
-<p><strong>例子:</strong><br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> psycopg2</div><div class="line"><span class="keyword">import</span> psycopg2.extensions</div><div class="line"><span class="keyword">import</span> logging</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">LoggingCursor</span><span class="params">(psycopg2.extensions.cursor)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">execute</span><span class="params">(self, dict)</span>:</span></div><div class="line">        logger = logging.getLogger(<span class="string">'sql_debug'</span>)</div><div class="line">        logger.info(self.mogrify(sql, args))</div><div class="line"></div><div class="line">        <span class="keyword">try</span>:</div><div class="line">        	psycopg2.extensions.cursor.execute(self, <span class="string">"BEGIN"</span>)</div><div class="line">            <span class="keyword">for</span> sql <span class="keyword">in</span> dict.keys():</div><div class="line">            	psycopg2.extensions.cursor.execute(self, sql, dict[sql])</div><div class="line">            psycopg2.extensions.cursor.execute(self, <span class="string">"COMMIT"</span>)</div><div class="line">        <span class="keyword">except</span> Exception, exc:</div><div class="line">        	psycopg2.extensions.cursor.execute(self, <span class="string">"ROLLBACK"</span>)</div><div class="line">            logger.error(<span class="string">"%s: %s"</span> % (exc.__class__.__name__, exc))</div><div class="line">            <span class="keyword">raise</span></div><div class="line"></div><div class="line">conn = psycopg2.connect(DSN)</div><div class="line">cur = conn.cursor(cursor_factory=LoggingCursor)</div><div class="line">sql_args=&#123;</div><div class="line">	<span class="string">"INSERT INTO mytable VALUES (%s, %s, %s)"</span>:(<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>),</div><div class="line">    <span class="string">"INSERT INTO mytable VALUES (%s, %s, %s)"</span>:(<span class="number">11</span>,<span class="number">12</span>,<span class="number">13</span>)</div><div class="line">&#125;</div><div class="line"><span class="comment"># 可以自动完成事务</span></div><div class="line">cur.execute(sql_args)</div><div class="line"></div><div class="line">这样就能够在执行的时候打印出sql语句和自定义异常</div></pre></td></tr></table></figure></p>
-<h2 id="raise-connect-errors"><a href="#raise-connect-errors" class="headerlink" title="raise_connect_errors"></a>raise_connect_errors</h2><p><strong>参数</strong>:bool<br><strong>含义</strong>:当初始化数据库连接失败后是否抛出连接异常,异常类为 <em>class momoko.PartiallyConnectedError</em></p>
-<h2 id="reconnect-interval"><a href="#reconnect-interval" class="headerlink" title="reconnect_interval"></a>reconnect_interval</h2><p><strong>参数:</strong> int<br><strong>含义:</strong>当数据库连接失败的时候,设置每多少毫秒重新尝试连接.</p>
-<h2 id="setsession"><a href="#setsession" class="headerlink" title="setsession"></a>setsession</h2><p><strong>参数:</strong>list<br><strong>含义:</strong>在一个事务中同时执行一个列表中的所有SQL语句,如果某条SQL语句执行失败了,就关闭执行这写SQL语句的会话,并且回滚事务.</p>
-<h2 id="auto-shrink"><a href="#auto-shrink" class="headerlink" title="auto_shrink"></a>auto_shrink</h2><p><strong>参数:</strong>bool<br><strong>含义:</strong>当指定了数据库连接池的max-size后,会自动回收超过最小连接数的连接.当连接数达到最大时才会触发该函数执行连接回收.</p>
-<h2 id="shrink-period"><a href="#shrink-period" class="headerlink" title="shrink_period"></a>shrink_period</h2><p><strong>参数:</strong>datetime.timedelta()<br><strong>含义:</strong>设置多久执行一次连接回收,前提是设置了auto_shrink为true.</p>
-<h2 id="shrink-delay"><a href="#shrink-delay" class="headerlink" title="shrink_delay"></a>shrink_delay</h2><p><strong>参数:</strong>datetime.timedelta()<br><strong>含义:</strong>设置多久(时,分,秒)没有用的连接被回收.前提是设置了auto_shrink为true.但是如果回收了连接后的连接数小于最小连接,就不会被回收.</p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://kangbiao.org/2014/09/14/datatable使用/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1392,6 +1229,185 @@
 <h2 id="官网"><a href="#官网" class="headerlink" title="官网"></a>官网</h2><blockquote>
 <p><a href="http://www.datatables.net/" target="_blank" rel="external">datatable</a></p>
 </blockquote>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://kangbiao.org/2014/09/14/momoko/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="kangbiao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="kingber">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2014/09/14/momoko/" itemprop="url">
+                  python使用postgresql-momoko配置
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2014-09-14 20:15:55" itemprop="dateCreated datePublished" datetime="2014-09-14T20:15:55+08:00">2014-09-14</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2016-02-19 21:11:34" itemprop="dateModified" datetime="2016-02-19T21:11:34+08:00">2016-02-19</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/PYTHON/" itemprop="url" rel="index"><span itemprop="name">PYTHON</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="size"><a href="#size" class="headerlink" title="size"></a>size</h2><p><strong>参数:</strong>int<br><strong>含义:</strong>最小的连接数</p>
+<h2 id="max-size"><a href="#max-size" class="headerlink" title="max_size"></a>max_size</h2><p><strong>参数:</strong>int<br><strong>含义:</strong>最大的连接数</p>
+<h2 id="cursor-factory"><a href="#cursor-factory" class="headerlink" title="cursor_factory"></a>cursor_factory</h2><p><strong>参数:</strong>psycopg2.extensions.cursor的子类<br><strong>含义:</strong>设置以后可以写一个psycopg2.extensions.cursor的子类,添加日志记录功能或者预先的数据库结果处理,格式化execute执行失败后的异常<br><strong>好处:</strong>可以很大程度的提高程序的灵活性,可以重新将事务封装在这个子类里面,而不用在每个执行SQL语句的地方都要写事务.<br>但是这样做只能保证单条语句或者没有关联的多条语句的事务提交和回滚,对于多个插入语句,并且这条语句需要上条语句的返回结果时,实现不是很灵活.</p>
+<p><strong>例子:</strong><br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> psycopg2</div><div class="line"><span class="keyword">import</span> psycopg2.extensions</div><div class="line"><span class="keyword">import</span> logging</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">LoggingCursor</span><span class="params">(psycopg2.extensions.cursor)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">execute</span><span class="params">(self, dict)</span>:</span></div><div class="line">        logger = logging.getLogger(<span class="string">'sql_debug'</span>)</div><div class="line">        logger.info(self.mogrify(sql, args))</div><div class="line"></div><div class="line">        <span class="keyword">try</span>:</div><div class="line">        	psycopg2.extensions.cursor.execute(self, <span class="string">"BEGIN"</span>)</div><div class="line">            <span class="keyword">for</span> sql <span class="keyword">in</span> dict.keys():</div><div class="line">            	psycopg2.extensions.cursor.execute(self, sql, dict[sql])</div><div class="line">            psycopg2.extensions.cursor.execute(self, <span class="string">"COMMIT"</span>)</div><div class="line">        <span class="keyword">except</span> Exception, exc:</div><div class="line">        	psycopg2.extensions.cursor.execute(self, <span class="string">"ROLLBACK"</span>)</div><div class="line">            logger.error(<span class="string">"%s: %s"</span> % (exc.__class__.__name__, exc))</div><div class="line">            <span class="keyword">raise</span></div><div class="line"></div><div class="line">conn = psycopg2.connect(DSN)</div><div class="line">cur = conn.cursor(cursor_factory=LoggingCursor)</div><div class="line">sql_args=&#123;</div><div class="line">	<span class="string">"INSERT INTO mytable VALUES (%s, %s, %s)"</span>:(<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>),</div><div class="line">    <span class="string">"INSERT INTO mytable VALUES (%s, %s, %s)"</span>:(<span class="number">11</span>,<span class="number">12</span>,<span class="number">13</span>)</div><div class="line">&#125;</div><div class="line"><span class="comment"># 可以自动完成事务</span></div><div class="line">cur.execute(sql_args)</div><div class="line"></div><div class="line">这样就能够在执行的时候打印出sql语句和自定义异常</div></pre></td></tr></table></figure></p>
+<h2 id="raise-connect-errors"><a href="#raise-connect-errors" class="headerlink" title="raise_connect_errors"></a>raise_connect_errors</h2><p><strong>参数</strong>:bool<br><strong>含义</strong>:当初始化数据库连接失败后是否抛出连接异常,异常类为 <em>class momoko.PartiallyConnectedError</em></p>
+<h2 id="reconnect-interval"><a href="#reconnect-interval" class="headerlink" title="reconnect_interval"></a>reconnect_interval</h2><p><strong>参数:</strong> int<br><strong>含义:</strong>当数据库连接失败的时候,设置每多少毫秒重新尝试连接.</p>
+<h2 id="setsession"><a href="#setsession" class="headerlink" title="setsession"></a>setsession</h2><p><strong>参数:</strong>list<br><strong>含义:</strong>在一个事务中同时执行一个列表中的所有SQL语句,如果某条SQL语句执行失败了,就关闭执行这写SQL语句的会话,并且回滚事务.</p>
+<h2 id="auto-shrink"><a href="#auto-shrink" class="headerlink" title="auto_shrink"></a>auto_shrink</h2><p><strong>参数:</strong>bool<br><strong>含义:</strong>当指定了数据库连接池的max-size后,会自动回收超过最小连接数的连接.当连接数达到最大时才会触发该函数执行连接回收.</p>
+<h2 id="shrink-period"><a href="#shrink-period" class="headerlink" title="shrink_period"></a>shrink_period</h2><p><strong>参数:</strong>datetime.timedelta()<br><strong>含义:</strong>设置多久执行一次连接回收,前提是设置了auto_shrink为true.</p>
+<h2 id="shrink-delay"><a href="#shrink-delay" class="headerlink" title="shrink_delay"></a>shrink_delay</h2><p><strong>参数:</strong>datetime.timedelta()<br><strong>含义:</strong>设置多久(时,分,秒)没有用的连接被回收.前提是设置了auto_shrink为true.但是如果回收了连接后的连接数小于最小连接,就不会被回收.</p>
 
           
         
