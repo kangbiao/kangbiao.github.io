@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://kangbiao.org/"/>
-  <updated>2018-09-04T13:22:11.454Z</updated>
+  <updated>2016-07-30T09:26:46.000Z</updated>
   <id>http://kangbiao.org/</id>
   
   <author>
@@ -14,20 +14,6 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title>photoPostName</title>
-    <link href="http://kangbiao.org/2018/09/04/photoPostName/"/>
-    <id>http://kangbiao.org/2018/09/04/photoPostName/</id>
-    <published>2018-09-04T13:22:11.000Z</published>
-    <updated>2018-09-04T13:22:11.454Z</updated>
-    
-    <summary type="html">
-    
-    </summary>
-    
-    
-  </entry>
   
   <entry>
     <title>本地日志分析上报脚本实现思路梳理</title>
@@ -1064,6 +1050,393 @@
     
     
       <category term="j2ee" scheme="http://kangbiao.org/tags/j2ee/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>VerPass接口设计文档</title>
+    <link href="http://kangbiao.org/2015/10/23/estate/"/>
+    <id>http://kangbiao.org/2015/10/23/estate/</id>
+    <published>2015-10-23T04:47:44.000Z</published>
+    <updated>2016-07-28T11:32:20.000Z</updated>
+    
+    <content type="html"><![CDATA[<p><strong>2015-11-20修订记录</strong></p>
+<ol>
+<li>增加安卓端检查更新接口</li>
+</ol>
+<p><strong>2015-11-12修订记录</strong></p>
+<ol>
+<li>新增获取该用户有权限的所有密钥接口</li>
+</ol>
+<p><strong>2015-10-24修订记录</strong></p>
+<ol>
+<li>返回的物业信息增加该物业所属的楼栋信息</li>
+<li>删掉了投诉评价接口,只能上报投诉和查看投诉</li>
+</ol>
+<p><strong>2015-10-23修订记录(多角色修改):</strong></p>
+<ol>
+<li>修改了获取用户角色接口,返回角色代码由原来的单数字字段变为逗号分隔的字符串 ,因为一个用户可能是业主或者租客</li>
+<li>修改了报修模块获取我的报修接口,数据有所增加.将图片路径直接返回,不需要作二次请求,同时增加返回维修人员信息</li>
+<li>新增确认报修完成接口,客户端可以确认该报修已经完成.需要确认完成后才能评论.具体参见评论报修接口说明</li>
+<li>新增上传开锁记录接口</li>
+<li>修改获取我的所有物业接口</li>
+<li>修改业主获取绑定用户接口</li>
+<li>修改获取一定数量的公告接口</li>
+<li>增加公告通过webview获取公告的接口(根据公告id获取公告详情)</li>
+<li>将申请绑定接口从用户中心模块移到物业模块,修改了接口访问地址</li>
+</ol>
+<blockquote>
+<p>该文档为描述物业管理系统服务器端与APP端的数据交互。</p>
+<p>文档里面参数的值为全大写的地方,值的范围只能是状态码对照表规定变量的范围之内,如:USER_ROLE只能为1,2或者3中的一个,否则服务器会返回参数异常错误.</p>
+<p>文档里面的数据为举例数据。</p>
+<p>接口基于restful风格的URL.</p>
+<p>—— <a href="mailto:kangbiao@kangbiao.org">批注</a>(康彪)</p>
+<p><strong><em>编码规范</em></strong><br><em>错误代码</em>:<br>web端错误代码规范:采用6位数字作为错误代码<br>最高位为0,四五位为模块代码,二三位为错误详情,最后一位作为扩展.</p>
+<p>app端错误代码规范:采用6位数字作为错误代码<br>最高两位为1,四五位为模块代码,二三位为错误详情,最后一位作为扩展,模块位全为0为程序异常<br>例:000030:web端00模块的03方法发生错误.</p>
+<p><em>数据格式</em>:<br>数据格式基于json<br>jsonString的值为空时为null,不会是空数组或者空字符串,基本格式如下:<br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="attr">"status"</span>: <span class="literal">true</span>/<span class="literal">false</span>,</div><div class="line">    <span class="attr">"errorMsg"</span>: &#123;</div><div class="line">        <span class="attr">"code"</span>: <span class="literal">null</span>/string,</div><div class="line">        <span class="attr">"description"</span>: <span class="literal">null</span>/string</div><div class="line">    &#125;,</div><div class="line">    <span class="attr">"jsonString"</span>: array or object or <span class="literal">null</span> or string or basictype</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>如果status为false,客户端需要根据errorMsg进行相应的业务处理,如果为true,则从jsonString里面取出业务数据处理,展示</p>
+</blockquote>
+<p><strong>状态码对照表</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>数据项</th>
+<th>变量</th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>app用户状态</td>
+<td>USER_STATUS</td>
+<td>-1(禁用)</td>
+<td>1(正常)</td>
+<td>0(待审核)</td>
+<td></td>
+</tr>
+<tr>
+<td>app用户角色</td>
+<td>USER_ROLE</td>
+<td>1(家庭成员)</td>
+<td>2(租户)</td>
+<td>3(业主)</td>
+<td></td>
+</tr>
+<tr>
+<td>性别</td>
+<td>SEX</td>
+<td>0(男)</td>
+<td>1(女)</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>证件类型</td>
+<td>CARD_TYPE</td>
+<td>0(身份证)</td>
+<td>1(军官证)</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>门禁权限是否可用</td>
+<td>DOOR_AUTHORITY</td>
+<td>0(不可用)</td>
+<td>1(可用)</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>维修状态</td>
+<td>REPAIR_STATUS</td>
+<td>0(待处理)</td>
+<td>1(处理中)</td>
+<td>2(处理完待评价)</td>
+<td>3(已评价)</td>
+</tr>
+<tr>
+<td>费用收费单位</td>
+<td>FEE_UNIT</td>
+<td>family(按户)</td>
+<td>square(按平米)</td>
+<td>per(按次)</td>
+<td></td>
+</tr>
+<tr>
+<td>账单状态</td>
+<td>BILL_STATUS</td>
+<td>0(未缴费)</td>
+<td>1(已缴费)</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>投诉状态</td>
+<td>COMPLAIN_STATUS</td>
+<td>0(待处理)</td>
+<td>1(已处理待评价)</td>
+<td>2(已评价)</td>
+<td></td>
+</tr>
+<tr>
+<td>投诉主题</td>
+<td>COMPLAIN_TYPE</td>
+<td>0(类型一)</td>
+<td>1(类型二)</td>
+<td>2(类型三)</td>
+<td></td>
+</tr>
+<tr>
+<td>物业类型</td>
+<td>PROPERTY_TYPE</td>
+<td>1(商户)</td>
+<td>2(住宅)</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>物业状态</td>
+<td>PROPERTY_STATUS</td>
+<td>-1(出租)</td>
+<td>1(自用)</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>车位类型</td>
+<td>PARKLOT_TYPE</td>
+<td>1(小车位)</td>
+<td>2(中车位)</td>
+<td>3(大车位)</td>
+<td></td>
+</tr>
+<tr>
+<td>费用类型</td>
+<td>FEE_TYPE</td>
+<td>0(物业费)</td>
+<td>1(服务费)</td>
+<td>2(车位费)</td>
+<td></td>
+</tr>
+<tr>
+<td>门禁密钥类型</td>
+<td>SECRET_TYPE</td>
+<td>1(楼栋)</td>
+<td>2(道闸)</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>错误代码对照表</strong></p>
+<table>
+<thead>
+<tr>
+<th>code</th>
+<th>描述</th>
+<th>错误级别</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>100000</td>
+<td>客户端参数错误</td>
+<td>高</td>
+</tr>
+<tr>
+<td>100001</td>
+<td>服务器未知异常</td>
+<td>高</td>
+</tr>
+</tbody>
+</table>
+<h2 id="app端接口"><a href="#app端接口" class="headerlink" title="app端接口"></a><strong>app端接口</strong></h2><h2 id="用户中心-01"><a href="#用户中心-01" class="headerlink" title="用户中心 (01)"></a>用户中心 (01)</h2><h3 id="登陆"><a href="#登陆" class="headerlink" title="登陆"></a>登陆</h3><p><strong>客户端请求</strong></p>
+<blockquote>
+<p><em>请求URL</em>:api/uc/login<br><em>请求方法</em>:GET/POST<br><em>请求参数</em>:<br>phone: 18144240528<br>password: md5(123456)</p>
+</blockquote>
+<p><strong>服务器返回数据</strong><br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">	<span class="attr">"status"</span>:<span class="literal">false</span>,</div><div class="line">	<span class="attr">"errorMsg"</span>:</div><div class="line">	&#123;</div><div class="line">		<span class="attr">"code"</span>:<span class="number">10001</span>,</div><div class="line">		<span class="attr">"description"</span>:<span class="string">"请输入11位手机号"</span></div><div class="line">	&#125;,</div><div class="line">    <span class="attr">"jsonString"</span>: <span class="literal">null</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="退出登陆"><a href="#退出登陆" class="headerlink" title="退出登陆"></a>退出登陆</h3><p><strong>客户端请求</strong></p>
+<blockquote>
+<p><em>请求URL</em>:api/uc/loginOut<br><em>请求方式</em>:GET</p>
+</blockquote>
+<p><strong>服务器返回数据</strong><br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">   <span class="attr">"status"</span>: <span class="literal">true</span>,</div><div class="line">   <span class="attr">"errorMsg"</span>: &#123;</div><div class="line">       <span class="attr">"code"</span>: <span class="literal">null</span>,</div><div class="line">       <span class="attr">"description"</span>: <span class="literal">null</span></div><div class="line">   &#125;,</div><div class="line">   <span class="attr">"jsonString"</span>: <span class="literal">null</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="密码找回"><a href="#密码找回" class="headerlink" title="密码找回"></a>密码找回</h3><p><strong>客户端请求</strong></p>
+<blockquote>
+<p><em>请求URL</em>:api/uc/findPassword/{userPhone}<br><em>请求方式</em>:GET</p>
+</blockquote>
+<p><strong>服务器返回数据</strong><br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">   <span class="attr">"status"</span>: <span class="literal">true</span>,</div><div class="line">   <span class="attr">"errorMsg"</span>: &#123;</div><div class="line">       <span class="attr">"code"</span>: <span class="literal">null</span>,</div><div class="line">       <span class="attr">"description"</span>: <span class="literal">null</span></div><div class="line">   &#125;,</div><div class="line">   <span class="attr">"jsonString"</span>: <span class="literal">null</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong>客户端请求</strong></p>
+<blockquote>
+<p><em>请求URL</em>:api/uc/findPassword/checkVerifyCode/{code}<br><em>请求方式</em>:GET</p>
+</blockquote>
+<p><strong>服务器返回数据</strong><br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">   <span class="attr">"status"</span>: <span class="literal">true</span>,</div><div class="line">   <span class="attr">"errorMsg"</span>: &#123;</div><div class="line">       <span class="attr">"code"</span>: <span class="literal">null</span>,</div><div class="line">       <span class="attr">"description"</span>: <span class="literal">null</span></div><div class="line">   &#125;,</div><div class="line">   <span class="attr">"jsonString"</span>: <span class="literal">null</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong>客户端请求</strong></p>
+<blockquote>
+<p><em>请求URL</em>:api/uc/findPassword/reset/{newPassword}<br><em>请求方式</em>:GET</p>
+</blockquote>
+<p><strong>服务器返回数据</strong><br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">   <span class="attr">"status"</span>: <span class="literal">true</span>,</div><div class="line">   <span class="attr">"errorMsg"</span>: &#123;</div><div class="line">       <span class="attr">"code"</span>: <span class="literal">null</span>,</div><div class="line">       <span class="attr">"description"</span>: <span class="literal">null</span></div><div class="line">   &#125;,</div><div class="line">   <span class="attr">"jsonString"</span>: <span class="literal">null</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="注册"><a href="#注册" class="headerlink" title="注册"></a>注册</h3><p><strong>客户端请求</strong></p>
+<blockquote>
+<p><em>请求URL</em>:api/uc/register/getVerifyCode/{phone}<br><em>请求方式</em>:GET</p>
+</blockquote>
+<p><strong>服务器返回数据</strong><br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">   <span class="attr">"status"</span>: <span class="literal">false</span>,</div><div class="line">   <span class="attr">"errorMsg"</span>: &#123;</div><div class="line">       <span class="attr">"code"</span>: <span class="string">"100200/100210"</span>,</div><div class="line">       <span class="attr">"description"</span>: <span class="string">"电话号码已经注册/请输入正确的手机号"</span></div><div class="line">   &#125;,</div><div class="line">   <span class="attr">"jsonString"</span>: <span class="literal">null</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong>客户端请求</strong></p>
+<blockquote>
+<p><em>请求URL</em>:api/uc/register/checkVerifyCode/{verifyCode}<br><em>请求方式</em>:GET</p>
+</blockquote>
+<p><strong>服务器返回数据</strong><br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">   <span class="attr">"status"</span>: <span class="literal">false</span>,</div><div class="line">   <span class="attr">"errorMsg"</span>: &#123;</div><div class="line">       <span class="attr">"code"</span>: <span class="string">"100220"</span>,</div><div class="line">       <span class="attr">"description"</span>: <span class="string">"验证码错误"</span></div><div class="line">   &#125;,</div><div class="line">   <span class="attr">"jsonString"</span>: <span class="literal">null</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong>客户端请求</strong></p>
+<blockquote>
+<p><em>请求URL</em>:api/uc/register/doRegister<br><em>请求方式</em>:GET<br>参数:<br>nickname:kangbiao<br>password:md5(123456)</p>
+</blockquote>
+<p><strong>服务器返回数据</strong><br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">   <span class="attr">"status"</span>: <span class="literal">true</span>,</div><div class="line">   <span class="attr">"errorMsg"</span>: &#123;</div><div class="line">       <span class="attr">"code"</span>: <span class="string">"100000(已经是业主)/100001(没有任何绑定)"</span>,</div><div class="line">       <span class="attr">"description"</span>: <span class="string">"如果已经是业主的话,后端会自动绑定所有物业,如果不是业主且没有任何绑定,则需要进入绑定物业界面,至于用户想要绑定其他物业,则可以在进入app后再绑定"</span></div><div class="line">   &#125;,</div><div class="line">   <span class="attr">"jsonString"</span>: <span class="literal">null</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="修改密码"><a href="#修改密码" class="headerlink" title="修改密码"></a>修改密码</h3><p><strong>客户端请求</strong></p>
+<blockquote>
+<p><em>请求URL</em>:api/uc/modify/password<br><em>请求方式</em>:GET<br>参数:<br>oldPassword:md5(123456)<br>newPassword:md5(234568)</p>
+</blockquote>
+<p><strong>服务器返回数据</strong><br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">   <span class="attr">"status"</span>: <span class="literal">false</span>,</div><div class="line">   <span class="attr">"errorMsg"</span>: &#123;</div><div class="line">       <span class="attr">"code"</span>: <span class="literal">null</span>,</div><div class="line">       <span class="attr">"description"</span>: <span class="string">"原密码错误"</span></div><div class="line">   &#125;,</div><div class="line">   <span class="attr">"jsonString"</span>: <span class="literal">null</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="修改个人资料"><a href="#修改个人资料" class="headerlink" title="修改个人资料"></a>修改个人资料</h3><p><strong>客户端请求</strong></p>
+<blockquote>
+<p><em>请求URL</em>:api/uc/modify/getProfile<br><em>请求方式</em>:GET</p>
+</blockquote>
+<p><strong>服务器返回数据</strong><br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="attr">"status"</span>: <span class="literal">true</span>,</div><div class="line">    <span class="attr">"errorMsg"</span>: &#123;</div><div class="line">        <span class="attr">"code"</span>: <span class="literal">null</span>,</div><div class="line">        <span class="attr">"description"</span>: <span class="literal">null</span></div><div class="line">    &#125;,</div><div class="line">    <span class="attr">"jsonString"</span>: &#123;</div><div class="line">        <span class="attr">"id"</span>: <span class="number">1</span>,</div><div class="line">        <span class="attr">"phone"</span>: <span class="string">"18144240528"</span>,</div><div class="line">        <span class="attr">"name"</span>: <span class="string">"康彪"</span>,</div><div class="line">        <span class="attr">"sex"</span>: <span class="number">0</span>,</div><div class="line">        <span class="attr">"birthday"</span>: <span class="number">150515510000</span>,</div><div class="line">        <span class="attr">"urgentName"</span>: <span class="string">"小明"</span>,</div><div class="line">        <span class="attr">"urgentPhone"</span>: <span class="string">"131627828989"</span>,</div><div class="line">        <span class="attr">"identityType"</span>: <span class="number">1</span>,</div><div class="line">        <span class="attr">"identityCode"</span>: <span class="string">"510704199405281715"</span>,</div><div class="line">        <span class="attr">"vehicleIdIst"</span>: <span class="string">"5426d;dsds5"</span>,</div><div class="line">        <span class="attr">"propertyIdList"</span>: <span class="string">"1;2"</span>,</div><div class="line">        <span class="attr">"authenticationTime"</span>: <span class="number">1541214000</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong>客户端请求</strong></p>
+<blockquote>
+<p><em>请求URL</em>:api/uc/modify/submitProfile<br><em>请求方式</em>:POST<br>参数:<br>name:姓名<br>birthday:出生日期<br>urgentName:紧急联系人姓名<br>urgentPhone:紧急联系人电话<br>identityType:CARD_TYPE<br>identityCode:证件号码<br>sex:SEX</p>
+</blockquote>
+<p><strong>服务器返回数据</strong><br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">   <span class="attr">"status"</span>: <span class="literal">false</span>,</div><div class="line">   <span class="attr">"errorMsg"</span>: &#123;</div><div class="line">       <span class="attr">"code"</span>: <span class="literal">null</span>,</div><div class="line">       <span class="attr">"description"</span>: <span class="string">"原密码错误"</span></div><div class="line">   &#125;,</div><div class="line">   <span class="attr">"jsonString"</span>: <span class="literal">null</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="获取用户角色"><a href="#获取用户角色" class="headerlink" title="获取用户角色"></a>获取用户角色</h3><blockquote>
+<p><em>请求URL</em>:api/uc/getRole<br><em>请求方式</em>:GET<br><em>说明</em>:由于现在是一个用户可以有多个角色关系,所以返回的USER_ROLE的值为1,2,3中的一个或多个,用逗号分割</p>
+</blockquote>
+<p><strong>服务器返回数据</strong><br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="attr">"status"</span>: <span class="literal">true</span>,</div><div class="line">    <span class="attr">"errorMsg"</span>: &#123;</div><div class="line">        <span class="attr">"code"</span>: <span class="literal">null</span>,</div><div class="line">        <span class="attr">"description"</span>: <span class="literal">null</span></div><div class="line">    &#125;,</div><div class="line">    <span class="attr">"jsonString"</span>: <span class="string">"1,2"</span>或者<span class="string">"1"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="推送-02"><a href="#推送-02" class="headerlink" title="推送(02)"></a>推送(02)</h2><p><strong>客户端请求</strong></p>
+<blockquote>
+<p><em>请求URL</em>:api/push<br><em>请求方式</em>:GET<br><em>参数</em>:<br>type:<br>info:</p>
+</blockquote>
+<p><strong>服务器返回数据</strong><br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">   <span class="attr">"status"</span>: <span class="literal">true</span>,</div><div class="line">   <span class="attr">"errorMsg"</span>: &#123;</div><div class="line">       <span class="attr">"code"</span>: <span class="literal">null</span>,</div><div class="line">       <span class="attr">"description"</span>: <span class="literal">null</span></div><div class="line">   &#125;,</div><div class="line">   <span class="attr">"jsonString"</span>: <span class="literal">null</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="投诉-03"><a href="#投诉-03" class="headerlink" title="投诉(03)"></a>投诉(03)</h2><h3 id="增加投诉"><a href="#增加投诉" class="headerlink" title="增加投诉"></a>增加投诉</h3><p><strong>客户端请求</strong></p>
+<blockquote>
+<p><em>请求URL</em>:api/complain/add<br><em>请求方式</em>:POST<br><em>参数</em>:<br>title:投诉标题<br>content:投诉内容<br>file[]:图片</p>
+</blockquote>
+<p><strong>服务器返回数据</strong><br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">   <span class="attr">"status"</span>: <span class="literal">false</span>,</div><div class="line">   <span class="attr">"errorMsg"</span>: &#123;</div><div class="line">       <span class="attr">"code"</span>: <span class="literal">null</span>,</div><div class="line">       <span class="attr">"description"</span>: <span class="string">"图片上传错误"</span></div><div class="line">   &#125;,</div><div class="line">   <span class="attr">"jsonString"</span>: <span class="literal">null</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="获取我的投诉"><a href="#获取我的投诉" class="headerlink" title="获取我的投诉"></a>获取我的投诉</h3><p><strong>客户端请求</strong></p>
+<blockquote>
+<p><em>请求URL</em>:api/complain/getMyComplain<br><em>请求方式</em>:GET<br><em>参数</em>:<br>status:COMPLAIN_STATUS,不加参数则返回所有投诉.result为投诉处理结果说明.</p>
+</blockquote>
+<p><strong>服务器返回数据</strong><br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="attr">"status"</span>: <span class="literal">true</span>,</div><div class="line">    <span class="attr">"errorMsg"</span>: &#123;</div><div class="line">        <span class="attr">"code"</span>: <span class="literal">null</span>,</div><div class="line">        <span class="attr">"description"</span>: <span class="literal">null</span></div><div class="line">    &#125;,</div><div class="line">    <span class="attr">"jsonString"</span>: [</div><div class="line">        &#123;</div><div class="line">            <span class="attr">"id"</span>: <span class="number">5</span>,</div><div class="line">            <span class="attr">"title"</span>: <span class="string">"楼下太吵"</span>,</div><div class="line">            <span class="attr">"content"</span>: <span class="string">"dfssad"</span>,</div><div class="line">            <span class="attr">"description"</span>: <span class="string">"打算倒萨"</span>,</div><div class="line">            <span class="attr">"phone"</span>: <span class="string">"18144240528"</span>,</div><div class="line">            <span class="attr">"time"</span>: <span class="number">23663323056</span>,</div><div class="line">            <span class="attr">"imageIdList"</span>: <span class="literal">null</span>,</div><div class="line">            <span class="attr">"type"</span>: <span class="number">1</span>,</div><div class="line">            <span class="attr">"status"</span>: <span class="number">0</span>,</div><div class="line">            <span class="attr">"cuId"</span>: <span class="number">1</span>,</div><div class="line">            <span class="attr">"remark"</span>: <span class="literal">null</span>,</div><div class="line">            <span class="attr">"result"</span>: <span class="literal">null</span>,</div><div class="line">            <span class="attr">"consoleUserEntity"</span>: <span class="literal">null</span></div><div class="line">        &#125;,</div><div class="line">        &#123;</div><div class="line">            <span class="attr">"id"</span>: <span class="number">18</span>,</div><div class="line">            <span class="attr">"title"</span>: <span class="string">"测试投诉"</span>,</div><div class="line">            <span class="attr">"content"</span>: <span class="string">"测试投诉"</span>,</div><div class="line">            <span class="attr">"description"</span>: <span class="string">"测试投诉"</span>,</div><div class="line">            <span class="attr">"phone"</span>: <span class="string">"18144240528"</span>,</div><div class="line">            <span class="attr">"time"</span>: <span class="number">1445666212672</span>,</div><div class="line">            <span class="attr">"imageIdList"</span>: <span class="string">"/oa/file/picture/20151024135652_286.jpg,/oa/file/picture/20151024135652_263.png"</span>,</div><div class="line">            <span class="attr">"type"</span>: <span class="literal">null</span>,</div><div class="line">            <span class="attr">"status"</span>: <span class="number">0</span>,</div><div class="line">            <span class="attr">"cuId"</span>: <span class="literal">null</span>,</div><div class="line">            <span class="attr">"remark"</span>: <span class="literal">null</span>,</div><div class="line">            <span class="attr">"result"</span>: <span class="literal">null</span>,</div><div class="line">            <span class="attr">"consoleUserEntity"</span>: <span class="literal">null</span></div><div class="line">        &#125;</div><div class="line">    ]</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="报修-04"><a href="#报修-04" class="headerlink" title="报修(04)"></a>报修(04)</h2><h3 id="增加报修"><a href="#增加报修" class="headerlink" title="增加报修"></a>增加报修</h3><p><strong>客户端请求</strong></p>
+<blockquote>
+<p><em>请求URL</em>:api/repair/add<br><em>请求方式</em>:POST<br><em>参数</em>:<br>title:报修主题<br>content:报修内容<br>file[]:图片(可选字段)</p>
+</blockquote>
+<p><strong>服务器返回数据</strong><br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">   <span class="attr">"status"</span>: <span class="literal">true</span>,</div><div class="line">   <span class="attr">"errorMsg"</span>: &#123;</div><div class="line">       <span class="attr">"code"</span>: <span class="literal">null</span>,</div><div class="line">       <span class="attr">"description"</span>: <span class="literal">null</span></div><div class="line">   &#125;,</div><div class="line">   <span class="attr">"jsonString"</span>: <span class="literal">null</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="获取我的报修"><a href="#获取我的报修" class="headerlink" title="获取我的报修"></a>获取我的报修</h3><p><strong>客户端请求</strong></p>
+<blockquote>
+<p><em>请求URL</em>:api/repair/getMyRepair<br><em>请求方式</em>:GET<br><em>参数</em>:<br>status:REPAIR_STATUS(不加则返回所有状态的报修)<br><em>说明</em>:imageIdList为逗号分隔的图片路径的字符串,不是原来的id字符串,另外当status为1(处理中)时,维修人员信息在repairManEntity里面.</p>
+</blockquote>
+<p><strong>服务器返回数据</strong><br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="attr">"status"</span>: <span class="literal">true</span>,</div><div class="line">    <span class="attr">"errorMsg"</span>: &#123;</div><div class="line">        <span class="attr">"code"</span>: <span class="literal">null</span>,</div><div class="line">        <span class="attr">"description"</span>: <span class="literal">null</span></div><div class="line">    &#125;,</div><div class="line">    <span class="attr">"jsonString"</span>: [</div><div class="line">        &#123;</div><div class="line">            <span class="attr">"id"</span>: <span class="number">15</span>,</div><div class="line">            <span class="attr">"phone"</span>: <span class="string">"18144240528"</span>,</div><div class="line">            <span class="attr">"repairManId"</span>: <span class="number">1</span>,</div><div class="line">            <span class="attr">"title"</span>: <span class="string">"test"</span>,</div><div class="line">            <span class="attr">"content"</span>: <span class="string">"报修测试"</span>,</div><div class="line">            <span class="attr">"description"</span>: <span class="string">"报修测试"</span>,</div><div class="line">            <span class="attr">"submitTime"</span>: <span class="number">1445598807245</span>,</div><div class="line">            <span class="attr">"processTime"</span>: <span class="number">1445599123885</span>,</div><div class="line">            <span class="attr">"finishTime"</span>: <span class="literal">null</span>,</div><div class="line">            <span class="attr">"imageIdList"</span>: <span class="string">"/oa/file/picture/20151023191327_823.jpg,/oa/file/picture/20151023191327_820.jpg"</span>,</div><div class="line">            <span class="attr">"status"</span>: <span class="number">1</span>,</div><div class="line">            <span class="attr">"remark"</span>: <span class="literal">null</span>,</div><div class="line">            <span class="attr">"remarkText"</span>: <span class="literal">null</span>,</div><div class="line">            <span class="attr">"cuId"</span>: <span class="number">1</span>,</div><div class="line">            <span class="attr">"result"</span>: <span class="literal">null</span>,</div><div class="line">            <span class="attr">"repairManEntity"</span>: &#123;</div><div class="line">                <span class="attr">"id"</span>: <span class="number">1</span>,</div><div class="line">                <span class="attr">"phone"</span>: <span class="string">"15114052120"</span>,</div><div class="line">                <span class="attr">"name"</span>: <span class="string">"小明"</span></div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    ]</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="确认报修完成"><a href="#确认报修完成" class="headerlink" title="确认报修完成"></a>确认报修完成</h3><p><strong>客户端请求</strong></p>
+<blockquote>
+<p><em>请求URL</em>:api/repair/confirmFinish/{repairID}<br><em>请求方式</em>:GET</p>
+</blockquote>
+<p><strong>服务器返回数据</strong><br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">   <span class="attr">"status"</span>: <span class="literal">true</span>,</div><div class="line">   <span class="attr">"errorMsg"</span>: &#123;</div><div class="line">       <span class="attr">"code"</span>: <span class="literal">null</span>,</div><div class="line">       <span class="attr">"description"</span>: <span class="literal">null</span></div><div class="line">   &#125;,</div><div class="line">   <span class="attr">"jsonString"</span>: <span class="literal">null</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="评论报修"><a href="#评论报修" class="headerlink" title="评论报修"></a>评论报修</h3><p><strong>客户端请求</strong></p>
+<blockquote>
+<p><em>请求URL</em>:api/repair/remark<br><em>请求方式</em>:POST<br><em>参数</em>:<br>id:报修id<br>remark:评分(0-100)<br>comment:文字评论<br><em>说明</em>:只用当报修状态为2时才可以评论报修</p>
+</blockquote>
+<p><strong>服务器返回数据</strong><br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">   <span class="attr">"status"</span>: <span class="literal">true</span>,</div><div class="line">   <span class="attr">"errorMsg"</span>: &#123;</div><div class="line">       <span class="attr">"code"</span>: <span class="literal">null</span>,</div><div class="line">       <span class="attr">"description"</span>: <span class="literal">null</span></div><div class="line">   &#125;,</div><div class="line">   <span class="attr">"jsonString"</span>: <span class="literal">null</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="费用相关-05"><a href="#费用相关-05" class="headerlink" title="费用相关(05)"></a>费用相关(05)</h2><h3 id="获取账单"><a href="#获取账单" class="headerlink" title="获取账单"></a>获取账单</h3><blockquote>
+<p><em>请求URL</em>:api/fee/getBill<br><em>请求方式</em>:GET<br><em>参数</em>:<br>status:BILL_STATUS(不加则返回所有状态的账单)</p>
+</blockquote>
+<p><strong>服务器返回数据</strong><br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="attr">"status"</span>: <span class="literal">true</span>,</div><div class="line">    <span class="attr">"errorMsg"</span>: &#123;</div><div class="line">        <span class="attr">"code"</span>: <span class="literal">null</span>,</div><div class="line">        <span class="attr">"description"</span>: <span class="literal">null</span></div><div class="line">    &#125;,</div><div class="line">    <span class="attr">"jsonString"</span>: [</div><div class="line">        &#123;</div><div class="line">            <span class="attr">"id"</span>: <span class="number">1</span>,</div><div class="line">            <span class="attr">"total"</span>: <span class="string">"400.0"</span>,</div><div class="line">            <span class="attr">"items"</span>: [</div><div class="line">                &#123;</div><div class="line">                    <span class="attr">"id"</span>: <span class="string">"水电费"</span>,</div><div class="line">                    <span class="attr">"text"</span>: <span class="string">"100"</span></div><div class="line">                &#125;,</div><div class="line">                &#123;</div><div class="line">                    <span class="attr">"id"</span>: <span class="string">"停车费"</span>,</div><div class="line">                    <span class="attr">"text"</span>: <span class="string">"100"</span></div><div class="line">                &#125;,</div><div class="line">                &#123;</div><div class="line">                    <span class="attr">"id"</span>: <span class="string">"煤气费"</span>,</div><div class="line">                    <span class="attr">"text"</span>: <span class="string">"200"</span></div><div class="line">                &#125;</div><div class="line">            ],</div><div class="line">            <span class="attr">"status"</span>: <span class="number">0</span>,</div><div class="line">            <span class="attr">"billTime"</span>: <span class="string">"1976-03"</span></div><div class="line">        &#125;</div><div class="line">    ]</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="物业费缴纳"><a href="#物业费缴纳" class="headerlink" title="物业费缴纳"></a>物业费缴纳</h3><p><strong>客户端请求</strong></p>
+<blockquote>
+<p><em>请求URL</em>:api/fee/submitBill<br><em>请求方式</em>:POST<br><em>参数</em>:<br>billIDs:1,2<br><em>说明</em>:客户端调用支付平台的接口后,根据返回结果判断是否成功,服务器根据回调方法判断是否成功</p>
+</blockquote>
+<p><strong>服务器返回数据</strong><br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">   <span class="attr">"status"</span>: <span class="literal">false</span>,</div><div class="line">   <span class="attr">"errorMsg"</span>: &#123;</div><div class="line">       <span class="attr">"code"</span>: <span class="literal">null</span>,</div><div class="line">       <span class="attr">"description"</span>: <span class="string">"账单缴费失败"</span></div><div class="line">   &#125;,</div><div class="line">   <span class="attr">"jsonString"</span>: <span class="literal">null</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="门禁相关06"><a href="#门禁相关06" class="headerlink" title="门禁相关06)"></a>门禁相关06)</h2><h3 id="获取门禁密钥"><a href="#获取门禁密钥" class="headerlink" title="获取门禁密钥"></a>获取门禁密钥</h3><p><strong>客户端请求</strong></p>
+<blockquote>
+<p><em>请求URL</em>:api/auth/getSecret/{symbol}<br><em>请求方式</em>:GET<br><em>说明</em>:{symbol}为唯一标识蓝牙或者wifi的值</p>
+</blockquote>
+<p><strong>服务器返回数据</strong><br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="attr">"status"</span>: <span class="literal">true</span>,</div><div class="line">    <span class="attr">"errorMsg"</span>: &#123;</div><div class="line">        <span class="attr">"code"</span>: <span class="literal">null</span>,</div><div class="line">        <span class="attr">"description"</span>: <span class="literal">null</span></div><div class="line">    &#125;,</div><div class="line">    <span class="attr">"jsonString"</span>: &#123;</div><div class="line">        <span class="attr">"id"</span>: <span class="number">11</span>,</div><div class="line">        <span class="attr">"controlId"</span>: <span class="number">3</span>,</div><div class="line">        <span class="attr">"symbol"</span>: <span class="string">"YCWY_D_001"</span>,</div><div class="line">        <span class="attr">"villageId"</span>: <span class="number">4</span>,</div><div class="line">        <span class="attr">"secret"</span>: <span class="string">"00000000"</span>,</div><div class="line">        <span class="attr">"password"</span>: <span class="string">"01234567"</span>,</div><div class="line">        <span class="attr">"type"</span>: <span class="number">1</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="获取该用户有权限的所有密钥"><a href="#获取该用户有权限的所有密钥" class="headerlink" title="获取该用户有权限的所有密钥"></a>获取该用户有权限的所有密钥</h3><p><strong>客户端请求</strong></p>
+<blockquote>
+<p><em>请求URL</em>:api/auth/getAllowSecret<br><em>请求方式</em>:GET<br><em>说明</em>:根据controlType区分楼栋,园区和道闸</p>
+</blockquote>
+<p><strong>服务器返回数据</strong><br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="attr">"status"</span>: <span class="literal">true</span>,</div><div class="line">    <span class="attr">"errorMsg"</span>: &#123;</div><div class="line">        <span class="attr">"code"</span>: <span class="literal">null</span>,</div><div class="line">        <span class="attr">"description"</span>: <span class="literal">null</span></div><div class="line">    &#125;,</div><div class="line">    <span class="attr">"jsonString"</span>: [</div><div class="line">        &#123;</div><div class="line">            <span class="attr">"id"</span>: <span class="number">39</span>,</div><div class="line">            <span class="attr">"controlType"</span>: <span class="number">1</span>,</div><div class="line">            <span class="attr">"symbol"</span>: <span class="string">"YC_D_0012"</span>,</div><div class="line">            <span class="attr">"secret"</span>: <span class="string">"12345678"</span>,</div><div class="line">            <span class="attr">"password"</span>: <span class="literal">null</span>,</div><div class="line">            <span class="attr">"type"</span>: <span class="number">1</span>,</div><div class="line">            <span class="attr">"controlEntity"</span>: <span class="string">"园区一"</span></div><div class="line">        &#125;,</div><div class="line">        &#123;</div><div class="line">            <span class="attr">"id"</span>: <span class="number">29</span>,</div><div class="line">            <span class="attr">"controlType"</span>: <span class="number">2</span>,</div><div class="line">            <span class="attr">"symbol"</span>: <span class="string">"YC_D_002"</span>,</div><div class="line">            <span class="attr">"secret"</span>: <span class="string">"123456789"</span>,</div><div class="line">            <span class="attr">"password"</span>: <span class="string">"123456"</span>,</div><div class="line">            <span class="attr">"type"</span>: <span class="number">2</span>,</div><div class="line">            <span class="attr">"controlEntity"</span>: <span class="string">"园区1的楼栋1"</span></div><div class="line">        &#125;,</div><div class="line">        &#123;</div><div class="line">            <span class="attr">"id"</span>: <span class="number">28</span>,</div><div class="line">            <span class="attr">"controlType"</span>: <span class="number">3</span>,</div><div class="line">            <span class="attr">"symbol"</span>: <span class="string">"YC_D_001"</span>,</div><div class="line">            <span class="attr">"secret"</span>: <span class="string">"123456789"</span>,</div><div class="line">            <span class="attr">"password"</span>: <span class="literal">null</span>,</div><div class="line">            <span class="attr">"type"</span>: <span class="number">1</span>,</div><div class="line">            <span class="attr">"controlEntity"</span>: <span class="string">"道闸一"</span></div><div class="line">        &#125;</div><div class="line">    ]</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="上传开锁记录"><a href="#上传开锁记录" class="headerlink" title="上传开锁记录"></a>上传开锁记录</h3><p><strong>客户端请求</strong></p>
+<blockquote>
+<p><em>请求URL</em>:api/auth/uploadDoorLog<br><em>请求方式</em>:POST<br><em>参数</em>：<br>symbol:蓝牙或者wifi的唯一标识<br>status:０(失败)／１(成功)<br>description:开门失败的描述（失败后必须返回该字段）<br>level:严重级别（０为软件故障，１为门禁硬件故障，２为用户手机因素，３为用户操作有误，４为其他。失败后必须返回该字段）<br><em>说明</em>:如果status为false,应该把错误信息写入ａｐｐ日志.</p>
+</blockquote>
+<p><strong>服务器返回数据</strong><br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="attr">"status"</span>: <span class="literal">true</span>,</div><div class="line">    <span class="attr">"errorMsg"</span>: &#123;</div><div class="line">        <span class="attr">"code"</span>: <span class="literal">null</span>,</div><div class="line">        <span class="attr">"description"</span>: <span class="literal">null</span></div><div class="line">    &#125;,</div><div class="line">    <span class="attr">"jsonString"</span>:<span class="literal">null</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="物业相关-07"><a href="#物业相关-07" class="headerlink" title="物业相关(07)"></a>物业相关(07)</h2><h3 id="获取所有园区"><a href="#获取所有园区" class="headerlink" title="获取所有园区"></a>获取所有园区</h3><p><strong>客户端请求</strong></p>
+<blockquote>
+<p><em>请求URL</em>:api/query/getAllVillage<br><em>请求方式</em>:GET</p>
+</blockquote>
+<p><strong>服务器返回数据</strong><br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">   <span class="attr">"status"</span>: <span class="literal">true</span>,</div><div class="line">   <span class="attr">"errorMsg"</span>: &#123;</div><div class="line">       <span class="attr">"code"</span>: <span class="literal">null</span>,</div><div class="line">       <span class="attr">"description"</span>: <span class="literal">null</span></div><div class="line">   &#125;,</div><div class="line">   <span class="attr">"jsonString"</span>: [&#123;<span class="attr">"id"</span>:<span class="number">1</span>,<span class="attr">"text"</span>:<span class="string">"园区一"</span>&#125;,&#123;<span class="attr">"id"</span>:<span class="number">2</span>,<span class="attr">"text"</span>:<span class="string">"园区二"</span>&#125;]</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="根据园区id获取所有的楼栋"><a href="#根据园区id获取所有的楼栋" class="headerlink" title="根据园区id获取所有的楼栋"></a>根据园区id获取所有的楼栋</h3><p><strong>客户端请求</strong></p>
+<blockquote>
+<p><em>请求URL</em>:api/query/getBuilding/{villageID}<br><em>请求方式</em>:GET</p>
+</blockquote>
+<p><strong>服务器返回数据</strong><br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">   <span class="attr">"status"</span>: <span class="literal">true</span>,</div><div class="line">   <span class="attr">"errorMsg"</span>: &#123;</div><div class="line">       <span class="attr">"code"</span>: <span class="literal">null</span>,</div><div class="line">       <span class="attr">"description"</span>: <span class="literal">null</span></div><div class="line">   &#125;,</div><div class="line">   <span class="attr">"jsonString"</span>: [&#123;<span class="attr">"id"</span>:<span class="number">1</span>,<span class="attr">"text"</span>:<span class="string">"楼栋一"</span>&#125;,&#123;<span class="attr">"id"</span>:<span class="number">2</span>,<span class="attr">"text"</span>:<span class="string">"楼栋二"</span>&#125;]</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="根据园区id和楼栋id获取所有的物业"><a href="#根据园区id和楼栋id获取所有的物业" class="headerlink" title="根据园区id和楼栋id获取所有的物业"></a>根据园区id和楼栋id获取所有的物业</h3><p><strong>客户端请求</strong></p>
+<blockquote>
+<p><em>请求URL</em>:api/query/getProperty<br><em>请求方式</em>:GET<br><em>参数</em>:<br>villageID:2<br>buildingID:3</p>
+</blockquote>
+<p><strong>服务器返回数据</strong><br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">   <span class="attr">"status"</span>: <span class="literal">true</span>,</div><div class="line">   <span class="attr">"errorMsg"</span>: &#123;</div><div class="line">       <span class="attr">"code"</span>: <span class="literal">null</span>,</div><div class="line">       <span class="attr">"description"</span>: <span class="literal">null</span></div><div class="line">   &#125;,</div><div class="line">   <span class="attr">"jsonString"</span>: [&#123;<span class="attr">"id"</span>:<span class="number">1</span>,<span class="attr">"text"</span>:<span class="string">"物业一"</span>&#125;,&#123;<span class="attr">"id"</span>:<span class="number">2</span>,<span class="attr">"text"</span>:<span class="string">"二"</span>&#125;]</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="用户申请绑定"><a href="#用户申请绑定" class="headerlink" title="用户申请绑定"></a>用户申请绑定</h3><p><strong>客户端请求</strong></p>
+<blockquote>
+<p><em>请求URL</em>:api/property/bind<br><em>请求方式</em>:POST<br>参数:<br>role:USER_ROLE<br>villageID:1<br>buildingID:2<br>propertyID:2</p>
+</blockquote>
+<p><strong>服务器返回数据</strong><br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">   <span class="attr">"status"</span>: <span class="literal">false</span>,</div><div class="line">   <span class="attr">"errorMsg"</span>: &#123;</div><div class="line">       <span class="attr">"code"</span>: <span class="literal">null</span>,</div><div class="line">       <span class="attr">"description"</span>: <span class="string">"您已申请或已经绑定到该物业,请不要重复申请"</span></div><div class="line">   &#125;,</div><div class="line">   <span class="attr">"jsonString"</span>: <span class="literal">null</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="获取我的所有物业"><a href="#获取我的所有物业" class="headerlink" title="获取我的所有物业"></a>获取我的所有物业</h3><p><strong>客户端请求</strong></p>
+<blockquote>
+<p><em>请求URL</em>:api/property/getMyPropery<br><em>请求方式</em>:GET<br><em>说明</em>:每个propertyEntity均对应一种用户角色(userRole),status字段为表明该绑定是待审核还是已通过审核.通过userRole字段判断该物业是我名下的物业还是我申请绑定的物业.</p>
+</blockquote>
+<p><strong>服务器返回数据</strong><br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="attr">"status"</span>: <span class="literal">true</span>,</div><div class="line">    <span class="attr">"errorMsg"</span>: &#123;</div><div class="line">        <span class="attr">"code"</span>: <span class="literal">null</span>,</div><div class="line">        <span class="attr">"description"</span>: <span class="literal">null</span></div><div class="line">    &#125;,</div><div class="line">    <span class="attr">"jsonString"</span>: [</div><div class="line">        &#123;</div><div class="line">            <span class="attr">"id"</span>: <span class="number">1</span>,</div><div class="line">            <span class="attr">"status"</span>: <span class="number">1</span>,</div><div class="line">            <span class="attr">"userRole"</span>: <span class="number">3</span>,</div><div class="line">            <span class="attr">"propertyEntity"</span>: &#123;</div><div class="line">                <span class="attr">"id"</span>: <span class="number">28</span>,</div><div class="line">                <span class="attr">"code"</span>: <span class="string">"A001"</span>,</div><div class="line">                <span class="attr">"location"</span>: <span class="string">"半山蓝湾一单元"</span>,</div><div class="line">                <span class="attr">"type"</span>: <span class="number">1</span>,</div><div class="line">                <span class="attr">"propertySquare"</span>: <span class="number">115.55</span>,</div><div class="line">                <span class="attr">"ownerType"</span>: <span class="number">1</span>,</div><div class="line">                <span class="attr">"villageId"</span>: <span class="number">5</span>,</div><div class="line">                <span class="attr">"buildingId"</span>: <span class="number">1</span>,</div><div class="line">                <span class="attr">"status"</span>: <span class="number">1</span>,</div><div class="line">                <span class="attr">"openDoorStatus"</span>: <span class="number">1</span>,</div><div class="line">                <span class="attr">"modifyTime"</span>: <span class="number">1445581460913</span>,</div><div class="line">                <span class="attr">"buildingEntity"</span>: &#123;</div><div class="line">                    <span class="attr">"id"</span>: <span class="number">1</span>,</div><div class="line">                    <span class="attr">"villageId"</span>: <span class="number">5</span>,</div><div class="line">                    <span class="attr">"description"</span>: <span class="string">""</span>,</div><div class="line">                    <span class="attr">"buildingCode"</span>: <span class="string">"G1B1"</span>,</div><div class="line">                    <span class="attr">"buildingName"</span>: <span class="string">"园区1的楼栋1"</span>,</div><div class="line">                    <span class="attr">"villageEntity"</span>: &#123;</div><div class="line">                        <span class="attr">"id"</span>: <span class="number">5</span>,</div><div class="line">                        <span class="attr">"code"</span>: <span class="string">"YQ001"</span>,</div><div class="line">                        <span class="attr">"name"</span>: <span class="string">"园区一"</span>,</div><div class="line">                        <span class="attr">"description"</span>: <span class="string">""</span></div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;,</div><div class="line">        &#123;</div><div class="line">            <span class="attr">"id"</span>: <span class="number">2</span>,</div><div class="line">            <span class="attr">"status"</span>: <span class="number">1</span>,</div><div class="line">            <span class="attr">"userRole"</span>: <span class="number">3</span>,</div><div class="line">            <span class="attr">"propertyEntity"</span>: &#123;</div><div class="line">                <span class="attr">"id"</span>: <span class="number">29</span>,</div><div class="line">                <span class="attr">"code"</span>: <span class="string">"A002"</span>,</div><div class="line">                <span class="attr">"location"</span>: <span class="string">"半山蓝湾二单元"</span>,</div><div class="line">                <span class="attr">"type"</span>: <span class="number">1</span>,</div><div class="line">                <span class="attr">"propertySquare"</span>: <span class="number">222.11</span>,</div><div class="line">                <span class="attr">"ownerType"</span>: <span class="number">1</span>,</div><div class="line">                <span class="attr">"villageId"</span>: <span class="number">5</span>,</div><div class="line">                <span class="attr">"buildingId"</span>: <span class="number">1</span>,</div><div class="line">                <span class="attr">"status"</span>: <span class="number">1</span>,</div><div class="line">                <span class="attr">"openDoorStatus"</span>: <span class="number">1</span>,</div><div class="line">                <span class="attr">"modifyTime"</span>: <span class="number">1345504275966</span>,</div><div class="line">                <span class="attr">"buildingEntity"</span>: &#123;</div><div class="line">                    <span class="attr">"id"</span>: <span class="number">1</span>,</div><div class="line">                    <span class="attr">"villageId"</span>: <span class="number">5</span>,</div><div class="line">                    <span class="attr">"description"</span>: <span class="string">""</span>,</div><div class="line">                    <span class="attr">"buildingCode"</span>: <span class="string">"G1B1"</span>,</div><div class="line">                    <span class="attr">"buildingName"</span>: <span class="string">"园区1的楼栋1"</span>,</div><div class="line">                    <span class="attr">"villageEntity"</span>: &#123;</div><div class="line">                        <span class="attr">"id"</span>: <span class="number">5</span>,</div><div class="line">                        <span class="attr">"code"</span>: <span class="string">"YQ001"</span>,</div><div class="line">                        <span class="attr">"name"</span>: <span class="string">"园区一"</span>,</div><div class="line">                        <span class="attr">"description"</span>: <span class="string">""</span></div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    ]</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="业主获取绑定用户"><a href="#业主获取绑定用户" class="headerlink" title="业主获取绑定用户"></a>业主获取绑定用户</h3><p><strong>客户端请求</strong></p>
+<blockquote>
+<p><em>请求URL</em>:api/property/getBind<br><em>请求方式</em>:GET<br><em>参数</em>:<br>status:USER_STATUS,不加则返回所有状态的绑定<br><em>说明</em>:如下例子代表xiaoming和xiaozhang分别请求以家庭成员和租客的身份绑定到物业编号为A001的物业上面,根据status得出两人的状态都是待审核.该示例数据仅为一个物业的绑定审核,一个业主会有多个物业,bindId字段标识一个绑定关系.</p>
+</blockquote>
+<p><strong>服务器返回数据</strong><br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="attr">"status"</span>: <span class="literal">true</span>,</div><div class="line">    <span class="attr">"errorMsg"</span>: &#123;</div><div class="line">        <span class="attr">"code"</span>: <span class="literal">null</span>,</div><div class="line">        <span class="attr">"description"</span>: <span class="literal">null</span></div><div class="line">    &#125;,</div><div class="line">    <span class="attr">"jsonString"</span>: [</div><div class="line">        &#123;</div><div class="line">            <span class="attr">"propertyEntity"</span>: &#123;</div><div class="line">                <span class="attr">"id"</span>: <span class="number">28</span>,</div><div class="line">                <span class="attr">"code"</span>: <span class="string">"A001"</span>,</div><div class="line">                <span class="attr">"location"</span>: <span class="string">"半山蓝湾一单元"</span>,</div><div class="line">                <span class="attr">"type"</span>: <span class="number">1</span>,</div><div class="line">                <span class="attr">"propertySquare"</span>: <span class="number">115.55</span>,</div><div class="line">                <span class="attr">"ownerType"</span>: <span class="number">1</span>,</div><div class="line">                <span class="attr">"status"</span>: <span class="number">1</span>,</div><div class="line">                <span class="attr">"openDoorStatus"</span>: <span class="number">1</span>,</div><div class="line">                <span class="attr">"modifyTime"</span>: <span class="number">1445581460913</span>,</div><div class="line">                <span class="attr">"buildingEntity"</span>: &#123;</div><div class="line">                    <span class="attr">"id"</span>: <span class="number">1</span>,</div><div class="line">                    <span class="attr">"description"</span>: <span class="string">""</span>,</div><div class="line">                    <span class="attr">"buildingCode"</span>: <span class="string">"G1B1"</span>,</div><div class="line">                    <span class="attr">"buildingName"</span>: <span class="string">"园区1的楼栋1"</span>,</div><div class="line">                    <span class="attr">"villageEntity"</span>: &#123;</div><div class="line">                        <span class="attr">"id"</span>: <span class="number">5</span>,</div><div class="line">                        <span class="attr">"code"</span>: <span class="string">"YQ001"</span>,</div><div class="line">                        <span class="attr">"name"</span>: <span class="string">"园区一"</span>,</div><div class="line">                        <span class="attr">"description"</span>: <span class="string">""</span></div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;,</div><div class="line">            <span class="attr">"bindUserInfos"</span>: [</div><div class="line">                &#123;</div><div class="line">                    <span class="attr">"bindId"</span>: <span class="number">5</span>,</div><div class="line">                    <span class="attr">"role"</span>: <span class="number">2</span>,</div><div class="line">                    <span class="attr">"status"</span>: <span class="number">0</span>,</div><div class="line">                    <span class="attr">"appUserEntity"</span>: &#123;</div><div class="line">                        <span class="attr">"phone"</span>: <span class="string">"13981111434"</span>,</div><div class="line">                        <span class="attr">"nickname"</span>: <span class="string">"xiaozhang"</span>,</div><div class="line">                        <span class="attr">"status"</span>: <span class="number">1</span>,</div><div class="line">                        <span class="attr">"registerTime"</span>: <span class="number">155515151500</span>,</div><div class="line">                        <span class="attr">"lastLogin"</span>: <span class="number">155212121000</span></div><div class="line">                    &#125;</div><div class="line">                &#125;,</div><div class="line">                &#123;</div><div class="line">                    <span class="attr">"bindId"</span>: <span class="number">6</span>,</div><div class="line">                    <span class="attr">"role"</span>: <span class="number">1</span>,</div><div class="line">                    <span class="attr">"status"</span>: <span class="number">0</span>,</div><div class="line">                    <span class="attr">"appUserEntity"</span>: &#123;</div><div class="line">                        <span class="attr">"phone"</span>: <span class="string">"15114052120"</span>,</div><div class="line">                        <span class="attr">"nickname"</span>: <span class="string">"xiaoming"</span>,</div><div class="line">                        <span class="attr">"status"</span>: <span class="number">1</span>,</div><div class="line">                        <span class="attr">"registerTime"</span>: <span class="number">155212121000</span>,</div><div class="line">                        <span class="attr">"lastLogin"</span>: <span class="number">155212121000</span></div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            ]</div><div class="line">        &#125;</div><div class="line">    ]</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="业主审核绑定"><a href="#业主审核绑定" class="headerlink" title="业主审核绑定"></a>业主审核绑定</h3><p><strong>客户端请求</strong></p>
+<blockquote>
+<p><em>请求URL</em>:api/property/submitBind/{operate}/{bindId}<br><em>请求方式</em>:GET<br><em>说明</em>:operate只能为agree或者refuse,bindId为上面审核绑定返回数据中的bindId字段</p>
+</blockquote>
+<p><strong>服务器返回数据</strong><br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="attr">"status"</span>: <span class="literal">true</span>,</div><div class="line">    <span class="attr">"errorMsg"</span>: &#123;</div><div class="line">        <span class="attr">"code"</span>: <span class="literal">null</span>,</div><div class="line">        <span class="attr">"description"</span>: <span class="literal">null</span></div><div class="line">    &#125;,</div><div class="line">    <span class="attr">"jsonString"</span>: <span class="literal">null</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="公告-08"><a href="#公告-08" class="headerlink" title="公告 (08)"></a>公告 (08)</h2><h3 id="获取一定数量的公告"><a href="#获取一定数量的公告" class="headerlink" title="获取一定数量的公告"></a>获取一定数量的公告</h3><p><strong>客户端请求</strong></p>
+<blockquote>
+<p><em>请求URL</em>:api/notice/getSome/{number}<br><em>请求方式</em>:GET<br><em>说明</em>:number为获取的公告的数量,最新公告优先返回.picturePathList以逗号分隔,没有图片则为null.注意content为null并不表示该公告详情为空,因为列表显示公告时不需要该字段,所以后台设为了null</p>
+</blockquote>
+<p><strong>服务器返回数据</strong><br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="attr">"status"</span>: <span class="literal">true</span>,</div><div class="line">    <span class="attr">"errorMsg"</span>: &#123;</div><div class="line">        <span class="attr">"code"</span>: <span class="literal">null</span>,</div><div class="line">        <span class="attr">"description"</span>: <span class="literal">null</span></div><div class="line">    &#125;,</div><div class="line">    <span class="attr">"jsonString"</span>: [</div><div class="line">        &#123;</div><div class="line">            <span class="attr">"id"</span>: <span class="number">6</span>,</div><div class="line">            <span class="attr">"title"</span>: <span class="string">"周本顺杨栋梁严重违纪被双开"</span>,</div><div class="line">            <span class="attr">"description"</span>: <span class="string">"河北省委原书记、省人大常委会原主任周本顺严重违纪被开除党籍和公职"</span>,</div><div class="line">            <span class="attr">"content"</span>: <span class="literal">null</span>,</div><div class="line">            <span class="attr">"createTime"</span>: <span class="number">1444977998184</span>,</div><div class="line">            <span class="attr">"picturePathList"</span>: <span class="string">"/oa/file/picture/20151023191327_823.jpg,/oa/file/picture/20151023191327_820.jpg"</span></div><div class="line">        &#125;,</div><div class="line">        &#123;</div><div class="line">            <span class="attr">"id"</span>: <span class="number">4</span>,</div><div class="line">            <span class="attr">"title"</span>: <span class="string">"测试公告"</span>,</div><div class="line">            <span class="attr">"description"</span>: <span class="string">"描述"</span>,</div><div class="line">            <span class="attr">"content"</span>: <span class="literal">null</span>,</div><div class="line">            <span class="attr">"createTime"</span>: <span class="number">1444899774481</span>,</div><div class="line">            <span class="attr">"picturePathList"</span>: <span class="string">"/oa/file/picture/20151023171656_889.jpg"</span></div><div class="line">        &#125;</div><div class="line">    ]</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="根据公告id获取公告详情"><a href="#根据公告id获取公告详情" class="headerlink" title="根据公告id获取公告详情"></a>根据公告id获取公告详情</h3><p><strong>客户端请求</strong></p>
+<blockquote>
+<p><em>请求URL</em>:api/notice/getContent/{noticeID}<br><em>请求方式</em>:GET<br><em>说明</em>:返回内容为该公告的html代码,通过webview显示只会返回公告详情公告标题和发布时间需要客户端自行组装.</p>
+</blockquote>
+<p><strong>服务器返回数据</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">H5网页</div></pre></td></tr></table></figure></p>
+<h2 id="版本检查-09"><a href="#版本检查-09" class="headerlink" title="版本检查 (09)"></a>版本检查 (09)</h2><p><strong>客户端请求</strong></p>
+<blockquote>
+<p><em>请求URL</em>:api/query/checkUpdate<br><em>请求方式</em>:GET</p>
+</blockquote>
+<p><strong>服务器返回数据</strong><br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="attr">"status"</span>: <span class="literal">true</span>,</div><div class="line">    <span class="attr">"errorMsg"</span>: &#123;</div><div class="line">        <span class="attr">"code"</span>: <span class="literal">null</span>,</div><div class="line">        <span class="attr">"description"</span>: <span class="literal">null</span></div><div class="line">    &#125;,</div><div class="line">    <span class="attr">"jsonString"</span>: &#123;</div><div class="line">        <span class="attr">"path"</span>: <span class="string">"/oa/file/apk/test.apk"</span>,</div><div class="line">        <span class="attr">"versionCode"</span>: <span class="string">"v1.1.2"</span>,</div><div class="line">        <span class="attr">"description"</span>: <span class="string">"修复门禁bug"</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;strong&gt;2015-11-20修订记录&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;增加安卓端检查更新接口&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;2015-11-12修订记录&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;新增获取该用户有权限的所有密钥接口&lt;/li
+    
+    </summary>
+    
+      <category term="接口文档" scheme="http://kangbiao.org/categories/%E6%8E%A5%E5%8F%A3%E6%96%87%E6%A1%A3/"/>
+    
     
   </entry>
   
