@@ -335,9 +335,9 @@
         <category>PYTHON</category>
       </categories>
       <tags>
+        <tag>python</tag>
         <tag>ngix</tag>
         <tag>uwsgi</tag>
-        <tag>python</tag>
         <tag>django</tag>
       </tags>
   </entry>
@@ -357,8 +357,8 @@
         <category>PYTHON</category>
       </categories>
       <tags>
-        <tag>python</tag>
         <tag>momoko</tag>
+        <tag>python</tag>
         <tag>postgresql</tag>
       </tags>
   </entry>
